@@ -6,10 +6,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 
 public class DataBase {
-    private final double[][] compressedLiquid = new double[114][6];
+    private final double[][] compressedLiquid = new double[120][6];
     private final double[][] saturatedTableT = new double[77][13];
     private final double[][] saturatedTableP = new double[75][13];
-    private final double[][] superHeatedTable = new double[523][6];
+    private final double[][] superHeatedTable = new double[522][6];
 
     public DataBase() {
         setTables();
@@ -29,12 +29,12 @@ public class DataBase {
 
     private void setSaturatedTableT() {
         String excelSatT = "Saturated.xlsx";
-        readExcelFile(excelSatT, saturatedTableT, 79, 0); // From row 79 (index 78)
+        readExcelFile(excelSatT, saturatedTableT, 0, 77); // From row 79 (index 78)
     }
 
     private void setSaturatedTableP() {
         String excelSatP = "Saturated.xlsx";
-        readExcelFile(excelSatP, saturatedTableP, 0, 77); // Up to row 77 (index 76 inclusive)
+        readExcelFile(excelSatP, saturatedTableP, 77, 152); // Up to row 77 (index 76 inclusive)
     }
 
     private void setSuperHeatedTable() {
@@ -64,15 +64,15 @@ public class DataBase {
                     endRow = rowCount; // Read till the end if endRow is not specified
                 }
 
-                for (int i = startRow; i < endRow; i++) {
+                for (int i = startRow + 1; i < endRow; i++) { // Start from the second row (index 1)
                     Row row = sheet.getRow(i);
-                    if (row == null) break;
+                    if (row == null) continue;
 
-                    for (int j = 0; j < table[i - startRow].length; j++) {
+                    for (int j = 0; j < table[i - startRow - 1].length; j++) {
                         Cell cell = row.getCell(j);
                         if (cell == null) continue;
 
-                        table[i - startRow][j] = getNumericCellValue(cell);
+                        table[i - startRow - 1][j] = getNumericCellValue(cell);
                     }
                 }
             }
@@ -84,6 +84,10 @@ public class DataBase {
             e.printStackTrace();
         }
     }
+
+
+
+
 
     /**
      * Safely retrieves a numeric value from a cell, handling different cell types.
@@ -121,4 +125,35 @@ public class DataBase {
     public double[][] getSuperHeatedTable() {
         return superHeatedTable;
     }
+
+    public static void main(String[] args) {
+        DataBase db = new DataBase();
+
+        // Print compressedLiquidTable
+        System.out.println("Compressed Liquid Table:");
+        printTable(db.getCompressedLiquidTable());
+
+        // Print saturatedTableT
+        System.out.println("Saturated Table T:");
+        printTable(db.getSaturatedTableT());
+
+        // Print saturatedTableP
+        System.out.println("Saturated Table P:");
+        printTable(db.getSaturatedTableP());
+
+        // Print superHeatedTable
+        System.out.println("Super Heated Table:");
+        printTable(db.getSuperHeatedTable());
+    }
+
+    // Helper method to print a 2D array
+    private static void printTable(double[][] table) {
+        for (double[] row : table) {
+            for (double value : row) {
+                System.out.print(value + "\t");  // Print each value in the row, separated by a tab
+            }
+            System.out.println();  // Move to the next line after each row
+        }
+    }
+
 }
