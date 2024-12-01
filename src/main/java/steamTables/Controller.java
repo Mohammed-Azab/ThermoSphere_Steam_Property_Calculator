@@ -32,7 +32,7 @@ public class Controller {
         if (!found) {
             throw new NotDefinedException();
         }
-        if (T2 <= T){ //CompressedLiquid
+        if (T2 < T){ //CompressedLiquid
             if (P<5){
                 steam.setSteamPhase(SteamPhase.CompressedLiquid);
                 steam.setX(0);
@@ -61,6 +61,35 @@ public class Controller {
                 steam.setH(compressed[row][4]);
                 steam.setS(compressed[row][5]);
             }
+        }
+        if (T2 == T){
+            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
+            steam.setX(0);
+            steam.setV(saturated[row][2]);
+            steam.setU(saturated[row][4]);
+            steam.setH(saturated[row][7]);
+            steam.setS(saturated[row][10]);
+        }
+        else {
+            steam.setSteamPhase(SteamPhase.SuperHeatedWater);
+            steam.setX(1);
+            double [][] superHeated = db.getSuperHeatedTable();
+            found =false;
+            for (int i = 0; i < superHeated.length; i++) {
+                if (superHeated[i][0] == P ) {
+                    found =true;
+                    row=i;
+                    break;
+                }
+            }
+
+            if (!found) {
+                throw new NotDefinedException();
+            }
+            steam.setV(superHeated[row][2]);
+            steam.setU(superHeated[row][3]);
+            steam.setH(superHeated[row][4]);
+            steam.setS(superHeated[row][5]);
         }
 
         return steam;
@@ -216,6 +245,8 @@ public class Controller {
         Steam steam = controller.findTheSteamUsingTP(120.21, 200);
         System.out.println(steam.toString());
     }
+
+
 
 
 
