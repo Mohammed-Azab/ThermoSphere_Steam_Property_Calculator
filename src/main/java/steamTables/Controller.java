@@ -1,6 +1,8 @@
 package steamTables;
 
 
+import Exceptions.NotDefinedException;
+
 public class Controller {
 
     private static DataBase db ;
@@ -15,6 +17,52 @@ public class Controller {
         Steam steam = new Steam();
         steam.setT(T);
         steam.setP(P);
+        double [][] saturated = db.getSaturatedTableP();
+        boolean found = false;
+        double  T2=0;
+        int row=0;
+        for (int i = 0; i < saturated.length; i++) {
+            if (saturated[i][0] == T ) {
+                found =true;
+                row=i;
+                T2 = saturated[i][1];
+                break;
+            }
+        }
+        if (!found) {
+            throw new NotDefinedException();
+        }
+        if (T2 <= T){ //CompressedLiquid
+            if (P<5){
+                steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                steam.setX(0);
+                steam.setV(saturated[row][2]);
+                steam.setU(saturated[row][3]);
+                steam.setH(saturated[row][4]);
+                steam.setS(saturated[row][5]);
+            }
+            else {
+                steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                steam.setX(0);
+                double [][] compressed=  db.getCompressedLiquidTable();
+                found =false;
+                for (int i = 0; i < compressed.length; i++) {
+                    if (compressed[i][0] == P ) {
+                        found =true;
+                        row=i;
+                        break;
+                    }
+                }
+                if (!found) {
+                    throw new NotDefinedException();
+                }
+                steam.setV(compressed[row][2]);
+                steam.setU(compressed[row][3]);
+                steam.setH(compressed[row][4]);
+                steam.setS(compressed[row][5]);
+            }
+        }
+
         return steam;
     }
 
@@ -161,6 +209,12 @@ public class Controller {
         steam.setX(phase.getX());
         return steam;
 
+    }
+
+    public static void main(String args []){
+        Controller controller = new Controller();
+        Steam steam = controller.findTheSteamUsingTP(120.21, 200);
+        System.out.println(steam.toString());
     }
 
 

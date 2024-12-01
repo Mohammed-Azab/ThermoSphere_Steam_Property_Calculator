@@ -68,5 +68,10 @@ public class Steam extends Water{
         X=steamPhase.getX();
     }
 
+    @Override
+    public String toString(){
+        return "T: "+T+" P: "+P+" V: "+v+" X: "+X+" U: "+u+" H: "+h+" S: "+s+" SteamPhase: "+steamPhase;
+    }
+
 
 }
