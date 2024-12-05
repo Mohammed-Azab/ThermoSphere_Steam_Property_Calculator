@@ -119,26 +119,63 @@ public class Controller {
         if (T >= steam.getCriticalTemperature()) { // superheated
             steam.setSteamPhase(SteamPhase.SuperHeatedWater);
             steam.setX(1);
-
         }
         else {
-            double[][] saturated = db.getSaturatedTableP();
+            double [][] saturated = db.getSaturatedTableT();
             boolean found = false;
-            double v2 = 0;
+            boolean f = false;
+            boolean g = false;
             int row = 0;
             for (int i = 0; i < saturated.length; i++) {
-                if (saturated[i][0] == T) {
-                    found = true;
-                    row = i;
-                    v2 = saturated[i][1];
+                if ( saturated[i][0] == T ) {
+                    found =true;
+                    row=i;
+                    break;
+                }
+                if (saturated[i][10] == v) {
+                    found =true;
+                    row=i;
+                    g=true;
+                    break;
+                }
+                if (saturated[i][12] == v) {
+                    found =true;
+                    row=i;
+                    f=true;
                     break;
                 }
             }
             if (!found) {
                 throw new NotDefinedException();
             }
-            if (v2 > v) {
-
+            steam.setP(saturated[row][1]);
+            if (g){
+                steam.setSteamPhase(SteamPhase.SaturatedVapour);
+                steam.setX(1);
+                steam.setV(saturated[row][2]);
+                steam.setU(saturated[row][4]);
+                steam.setH(saturated[row][7]);
+                steam.setS(saturated[row][10]);
+            }
+            else if (f){
+                steam.setSteamPhase(SteamPhase.SaturatedLiquid);
+                steam.setX(0);
+                steam.setV(saturated[row][3]);
+                steam.setU(saturated[row][6]);
+                steam.setH(saturated[row][9]);
+                steam.setS(saturated[row][12]);
+            }
+            else {
+                double X = (v-saturated[row][2])/(saturated[row][3]-saturated[row][2]); //u = uf + X * ufg
+                steam.setX(X);
+                steam.setSteamPhase(SteamPhase.SaturatedMixture);
+                double u =saturated[row][4] + X*(saturated[row][5]);
+                double h = saturated[row][7] + X*(saturated[row][8]);
+                double s = saturated[row][10] + X*(saturated[row][12]);
+                steam.setV(v);
+                steam.setU(u);
+                steam.setH(h);
+                steam.setS(s);
             }
         }
 
@@ -214,7 +251,62 @@ public class Controller {
         Steam steam = new Steam();
         steam.setT(T);
         steam.setH(h);
-
+        double [][] saturated = db.getSaturatedTableT();
+        boolean found = false;
+        boolean f = false;
+        boolean g = false;
+        int row = 0;
+        for (int i = 0; i < saturated.length; i++) {
+            if ( saturated[i][0] == T ) {
+                found =true;
+                row=i;
+                break;
+            }
+            if (saturated[i][10] == h) {
+                found =true;
+                row=i;
+                g=true;
+                break;
+            }
+            if (saturated[i][12] == h) {
+                found =true;
+                row=i;
+                f=true;
+                break;
+            }
+        }
+        if (!found) {
+            throw new NotDefinedException();
+        }
+        steam.setP(saturated[row][1]);
+        if (g){
+            steam.setSteamPhase(SteamPhase.SaturatedVapour);
+            steam.setX(1);
+            steam.setV(saturated[row][2]);
+            steam.setU(saturated[row][4]);
+            steam.setH(saturated[row][7]);
+            steam.setS(saturated[row][10]);
+        }
+        else if (f){
+            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
+            steam.setX(0);
+            steam.setV(saturated[row][3]);
+            steam.setU(saturated[row][6]);
+            steam.setH(saturated[row][9]);
+            steam.setS(saturated[row][12]);
+        }
+        else {
+            double X = (h-saturated[row][7])/saturated[row][8] ; //h = hf + X * hfg
+            steam.setX(X);
+            steam.setSteamPhase(SteamPhase.SaturatedMixture);
+            double v =saturated[row][2] + X*(saturated[row][3]-saturated[row][2]);
+            double u = saturated[row][4] + X*(saturated[row][5]);
+            double s = saturated[row][10] + X*(saturated[row][12]);
+            steam.setV(v);
+            steam.setU(u);
+            steam.setH(h);
+            steam.setS(s);
+        }
         return steam;
     }
 
@@ -882,7 +974,6 @@ public class Controller {
     public Steam findTheSteamUsingHX(double H, double X) {
         Steam steam = new Steam();
         return steam;
-
     }
 
     public Steam findTheSteamUsingHState(double H, SteamPhase phase) {
