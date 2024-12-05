@@ -3,7 +3,7 @@ package steamTables;
 public enum SteamPhase {
     SaturatedLiquid("Saturated Liquid",0),
     SaturatedVapour("Saturated Vapor", 1),
-    saturatedMixture("Saturated Mixture", 1.5),
+    SaturatedMixture("Saturated Mixture", 1.5),
     CompressedLiquid("Compressed Liquid", 0),
     SuperHeatedWater("Superheated Water", 1),
     Saturated("Saturated",0.5);
