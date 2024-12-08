@@ -23,22 +23,22 @@ public class DataBase {
     }
 
     private void setCompressedLiquidTable() {
-        String excelCompressedLiquid = "CompressedLiquid.xlsx";
+        String excelCompressedLiquid = "dataBase/CompressedLiquid.xlsx";
         readExcelFile(excelCompressedLiquid, compressedLiquid, 0, 0);
     }
 
     private void setSaturatedTableT() {
-        String excelSatT = "Saturated.xlsx";
+        String excelSatT = "dataBase/Saturated.xlsx";
         readExcelFile(excelSatT, saturatedTableT, 0, 77); // From row 79 (index 78)
     }
 
     private void setSaturatedTableP() {
-        String excelSatP = "Saturated.xlsx";
+        String excelSatP = "dataBase/Saturated.xlsx";
         readExcelFile(excelSatP, saturatedTableP, 77, 152); // Up to row 77 (index 76 inclusive)
     }
 
     private void setSuperHeatedTable() {
-        String excelSuperHeated = "SuperHeated.xlsx";
+        String excelSuperHeated = "dataBase/SuperHeated.xlsx";
         readExcelFile(excelSuperHeated, superHeatedTable, 0, 0);
     }
 
