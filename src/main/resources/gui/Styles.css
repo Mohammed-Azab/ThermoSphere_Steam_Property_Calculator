@@ -1,6 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 .background {
-    //-fx-background-image: url("../images/FullMainBackground.jpg");
-    -fx-background-size: 100% 100%;
-    -fx-background-position: center center;
-    -fx-background-repeat: no-repeat;
+    -fx-background-color: white;
+    /* -fx-background-image: url("../images/FullMainBackground.jpg"); */
+    /* -fx-background-size: 100% 100%; */
+    /* -fx-background-position: center center; */
+    /* -fx-background-repeat: no-repeat; */
+}
+.button {
+    -fx-background-color: #D5006D;
+    -fx-background-radius: 20px;
+    -fx-border-width: 2px;
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+    -fx-font-size: 19px;
+}
+
+/*.custom-font {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+} */
+
+.custom-textfield {
+    -fx-background-color: #D5006D; /* Pink background */
+    -fx-text-fill: white; /* White text */
+    -fx-prompt-text-fill: white; /* White text for placeholder */
+    -fx-border-radius: 10px; /* Rounded corners */
+    -fx-background-radius: 10px; /* Rounded corners */
+    -fx-font-size: 14px; /* Font size */
+    -fx-font-family: 'Roboto'; /* Custom font (change if needed) */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-padding: 10px; /* Padding for better spacing */
+    -fx-border: 1px solid #D5006D; /* Border matching the background */
+}
+
+.custom-textfield:focused {
+    -fx-background-color: #D5006D; /* Keep pink background on focus */
+    -fx-border-color: white; /* White border when focused */
+}
+
+.custom-combobox {
+    -fx-background-color: #D67C4B; /* Orange-brown background */
+    -fx-text-fill: white; /* White text */
+    -fx-prompt-text-fill: white; /* White text for placeholder */
+    -fx-border-radius: 10px; /* Rounded corners */
+    -fx-background-radius: 10px; /* Rounded corners */
+    -fx-font-size: 14px; /* Font size */
+    -fx-font-family: 'Roboto'; /* Custom font (change if needed) */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-padding: 10px; /* Padding for better spacing */
+    -fx-border: 1px solid #D67C4B; /* Border matching the background */
+    -fx-alignment: center; /* Center text inside the combo box */
+}
+
+.custom-combobox .combo-box-base {
+    -fx-background-color: #D67C4B; /* Consistent background */
+    -fx-border-color: #D67C4B; /* Border color matching the background */
+    -fx-border-radius: 10px; /* Rounded corners */
+}
+
+.custom-combobox .arrow-button {
+    -fx-background-color: #D67C4B; /* Arrow button color */
+}
+
+.custom-combobox:focused {
+    -fx-background-color: #D67C4B; /* Keep brown-orange background on focus */
+    -fx-border-color: white; /* White border when focused */
+}
+
+.custom-combobox .label {
+    -fx-text-fill: white; /* White label text */
+    -fx-alignment: center; /* Center label inside the combo box */
+}
+
+.custom-combobox .text {
+    -fx-text-fill: white; /* White text color */
+    -fx-alignment: center; /* Center the text inside the ComboBox */
 }
