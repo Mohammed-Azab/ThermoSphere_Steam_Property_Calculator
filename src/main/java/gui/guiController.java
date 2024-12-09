@@ -45,34 +45,9 @@ public class guiController implements Initializable {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        if (tF3.isVisible() && tF3.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText(null);
-            alert.setContentText("Please enter the value of " + comboBox3.getValue());
-        }
+         if (!isThirdInputValid()){
+             return;
+         }
 
     }
 
@@ -129,5 +104,34 @@ public class guiController implements Initializable {
 
 
         return true;
+    }
+
+    private boolean isThirdInputValid() {
+
+        if (tF3.isVisible()) {
+            if (tF3.getText().isEmpty()){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText("Please enter the value of " + comboBox3.getValue());
+                return false;
+            }
+            else if (Integer.parseInt(tF3.getText()) < 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText("Negative numbers are not allowed");
+                return false;
+            }
+            else if (Integer.parseInt(tF3.getText()) == 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText(comboBox3.getValue() +" cannot be zero");
+                return false;
+            }
+        }
+        return true;
+
     }
 }
