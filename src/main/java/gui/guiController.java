@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 public class guiController implements Initializable {
 
     public Label LP, LT, LV, LU, LH, LS;
-    public ComboBox<String> comboBox1, comboBox2, comboBox3;
+    public ComboBox<String> comboBox1, comboBox2, comboBox3, comboBox11 , comboBox22;
     public ImageView general;
     public ImageView general1;
 
@@ -27,8 +27,8 @@ public class guiController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        tF1.setVisible(false);
-        tF2.setVisible(false);
+        tF1.setVisible(true);
+        tF2.setVisible(true);
         tF3.setVisible(false);
         general1.setVisible(false);
         general.setVisible(false);
@@ -40,45 +40,75 @@ public class guiController implements Initializable {
         LS.setVisible(false);
         type.setVisible(false);
         labelType.setVisible(false);
-        controller = new Controller();
-        comboBox1.setItems(FXCollections.observableArrayList("Option A", "Option B", "Option C"));
-        comboBox2.setItems(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
-        comboBox3.setItems(FXCollections.observableArrayList("Choice X", "Choice Y", "Choice Z"));
+        //controller = new Controller();
+        comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
+        comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality","Phase"));
+        comboBox3.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
+        comboBox11.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
+        comboBox22.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
             updateComboBoxOptions(comboBox2, newValue);
+            comboBox11.setVisible(newValue.equals("Phase"));
         });
 
         comboBox2.valueProperty().addListener((observable, oldValue, newValue) -> {
             updateComboBoxOptions(comboBox1, newValue);
+            comboBox22.setVisible(newValue.equals("Phase"));
+        });
+
+        comboBox11.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals("Saturated Mixture")) {
+                comboBox22.setVisible(false);
+                comboBox11.setVisible(false);
+                comboBox1.setValue("Quality");
+            }
+        });
+
+        comboBox22.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals("Saturated Mixture")) {
+                comboBox22.setVisible(false);
+                comboBox11.setVisible(false);
+                comboBox2.setValue("Quality");
+            }
         });
 
     }
 
     private void updateComboBoxOptions(ComboBox<String> comboBox, String selectedOption) {
-        if ("Option A".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
-        } else if ("Option B".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Option 4", "Option 5", "Option 6"));
-        } else {
-            comboBox.setItems(FXCollections.observableArrayList("Option 7", "Option 8", "Option 9"));
+        if ("Temperature".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
+        } else if ("Pressure".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
+        } else if ("Volume".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Enthalpy", "Entropy", "Quality", "Phase"));
+        }
+        else if ("Enthalpy".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
+        }
+        else if ("Entropy".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure" , "Quality", "Phase"));
+        }
+        else if ("Quality".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Enthalpy", "Entropy"));
         }
     }
 
     public void find(MouseEvent mouseEvent) {
-        if (!isInputsValid()){
-            return;
-        }
         String chosenQ1 = (String) comboBox1.getSelectionModel().getSelectedItem();
         String chosenQ2 = (String) comboBox2.getSelectionModel().getSelectedItem();
         String q1 = tF1.getText();
         String q2 = tF2.getText();
+        if (!isInputsValid()){
+            return;
+        }
+
         double v1 = Double.parseDouble(q1);
         double v2 = Double.parseDouble(q2);
         Steam steam = new Steam();
         if (chosenQ1.equals("Temperature")) {
             if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingTP(v1, v2);
-            } else if (chosenQ2.equals("X")) {
+            } else if (chosenQ2.equals("Quality")) {
                 steam = controller.findTheSteamUsingTX(v1, v2);
             } else if (chosenQ2.equals("Volume")) {
                 steam = controller.findTheSteamUsingTV(v1, v2);
@@ -91,7 +121,7 @@ public class guiController implements Initializable {
         if (chosenQ1.equals("Pressure")) {
             if (chosenQ2.equals("Temperature")) {
                 steam = controller.findTheSteamUsingTP(v2, v1); // Reversed values
-            } else if (chosenQ2.equals("X")) {
+            } else if (chosenQ2.equals("Quality")) {
                 steam = controller.findTheSteamUsingPX(v1, v2);
             } else if (chosenQ2.equals("Volume")) {
                 steam = controller.findTheSteamUsingPV(v1, v2);
@@ -106,7 +136,7 @@ public class guiController implements Initializable {
                 steam = controller.findTheSteamUsingTS(v2, v1);
             } else if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingPS(v2, v1);
-            } else if (chosenQ2.equals("X")) {
+            } else if (chosenQ2.equals("Quality")) {
                 steam = controller.findTheSteamUsingXS(v2, v1);
             }
         }
@@ -115,11 +145,11 @@ public class guiController implements Initializable {
                 steam = controller.findTheSteamUsingTH(v2, v1);
             } else if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingPH(v2, v1);
-            } else if (chosenQ2.equals("X")) {
+            } else if (chosenQ2.equals("Quality")) {
                 steam = controller.findTheSteamUsingHX(v1, v2);
             }
         }
-        if (chosenQ1.equals("X")) {
+        if (chosenQ1.equals("Quality")) {
             if (chosenQ2.equals("Temperature")) {
                 steam = controller.findTheSteamUsingTX(v2, v1);
             } else if (chosenQ2.equals("Pressure")) {
@@ -137,10 +167,40 @@ public class guiController implements Initializable {
                 steam = controller.findTheSteamUsingTV(v2, v1);
             } else if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingPV(v2, v1);
-            } else if (chosenQ2.equals("X")) {
+            } else if (chosenQ2.equals("Quality")) {
                 steam = controller.findTheSteamUsingVX(v1, v2);
             }
         }
+        if (chosenQ1.equals("Phase")) {
+            String phase ="";
+            if (comboBox11.isVisible()){
+                phase = comboBox11.getValue();
+            }
+            else if (comboBox22.isVisible()){
+                phase = comboBox22.getValue();
+            }
+            else {
+                throw new IllegalArgumentException("Phase is not visible");
+            }
+            if (phase.equals("Saturated Liquid, \"\", \"\"")) {
+                v1 = 0.0;
+            }
+            else if (phase.equals("Saturated Vapour")){
+                v1= 1.0;
+            }
+            if (chosenQ2.equals("Temperature")) {
+                steam = controller.findTheSteamUsingTX(v2, v1);
+            } else if (chosenQ2.equals("Pressure")) {
+                steam = controller.findTheSteamUsingPX(v2, v1);
+            } else if (chosenQ2.equals("Volume")) {
+                steam = controller.findTheSteamUsingVX(v2, v1);
+            } else if (chosenQ2.equals("Enthalpy")) {
+                steam = controller.findTheSteamUsingHX(v2, v1);
+            } else if (chosenQ2.equals("Entropy")) {
+                steam = controller.findTheSteamUsingSX(v2, v1); //x must be 1 or 0 or 3 element required
+            }
+        }
+
 
         // If none of the conditions matched, you can add an alert or log an error.
         if (steam == null) {
@@ -172,12 +232,16 @@ public class guiController implements Initializable {
 
 
     private boolean isInputsValid() {
+
         if (tF1.isVisible()) {
             if (tF1.getText().isEmpty()){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Please enter the value of " + comboBox1.getValue());
+                return false;
+            }
+            else if (!checkIfNumeric(comboBox1.getValue())) {
                 return false;
             }
             else if (Integer.parseInt(tF1.getText()) < 0) {
@@ -203,6 +267,9 @@ public class guiController implements Initializable {
                 alert.setContentText("Please enter the value of " + comboBox2.getValue());
                 return false;
             }
+            else if (!checkIfNumeric(comboBox2.getValue())) {
+                return false;
+            }
             else if (Integer.parseInt(tF2.getText()) < 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
@@ -225,7 +292,6 @@ public class guiController implements Initializable {
     }
 
     private boolean isThirdInputValid() {
-
         if (tF3.isVisible()) {
             if (tF3.getText().isEmpty()){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -251,5 +317,23 @@ public class guiController implements Initializable {
         }
         return true;
 
+    }
+
+    public boolean checkIfNumeric(String input) {
+        try {
+            Double.parseDouble(input);
+            return true;
+        } catch (Exception exception) {
+            showAlert("Invalid Input", "The input must be a valid number.");
+            return false;
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

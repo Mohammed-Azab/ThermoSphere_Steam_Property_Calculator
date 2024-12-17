@@ -1004,8 +1004,17 @@ public class Controller {
 
 
     public Steam findTheSteamUsingVX(double v, double X) {
+        Steam steam = new Steam();
+        steam.setV(v);
+        steam.setX(X);
+        return steam;
     }
 
     public Steam findTheSteamUsingSX(double S, double X) {
+        Steam steam = new Steam();
+        steam.setS(S);
+        steam.setX(X);
+        return steam;
     }
 }
+

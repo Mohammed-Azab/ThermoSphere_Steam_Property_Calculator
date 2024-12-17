@@ -52,7 +52,7 @@
    <TextField fx:id="tF1" layoutX="126.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
    <TextField fx:id="tF2" layoutX="600.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
    <TextField fx:id="tF3" layoutX="363.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" visible="false" />
-   <Label layoutX="305.0" layoutY="42.0" prefHeight="54.0" prefWidth="470.0" text="Please enter 2 Qunatities">
+   <Label layoutX="218.0" layoutY="35.0" prefHeight="54.0" prefWidth="470.0" text="Please enter 2 Qunatities">
       <font>
          <Font name="NimbusRoman-Bold" size="36.0" />
       </font>
@@ -61,7 +61,7 @@
       <Image url="@Thermo.jpg" />
    </ImageView>
    <Button fx:id="findButton" layoutX="407.0" layoutY="381.0" mnemonicParsing="false" onMouseClicked="#find" onMousePressed="#find" prefHeight="31.0" prefWidth="135.0" text="Find" />
-   <Label fx:id="labelType" layoutX="332.0" layoutY="595.0" prefHeight="43.0" prefWidth="135.0" text="Type :">
+   <Label fx:id="labelType" layoutX="324.0" layoutY="595.0" prefHeight="43.0" prefWidth="135.0" text="Type :">
       <font>
          <Font name="MT Extra" size="24.0" />
       </font>
@@ -71,4 +71,6 @@
          <Font name="NimbusRoman-Bold" size="24.0" />
       </font>
    </Label>
+   <ComboBox fx:id="comboBox11" layoutX="126.0" layoutY="158.0" prefHeight="50.0" prefWidth="223.0" promptText="Choose The Phase" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
+   <ComboBox fx:id="comboBox22" layoutX="600.0" layoutY="158.0" prefHeight="50.0" prefWidth="223.0" promptText="Choose The Phase" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
 </AnchorPane>
