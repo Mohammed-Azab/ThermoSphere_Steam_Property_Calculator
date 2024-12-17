@@ -48,28 +48,49 @@ public class guiController implements Initializable {
         comboBox22.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
             updateComboBoxOptions(comboBox2, newValue);
-            comboBox11.setVisible(newValue.equals("Phase"));
+            if(newValue != null) {
+                comboBox11.setVisible(newValue.equals("Phase"));
+            }
         });
 
         comboBox2.valueProperty().addListener((observable, oldValue, newValue) -> {
             updateComboBoxOptions(comboBox1, newValue);
-            comboBox22.setVisible(newValue.equals("Phase"));
+            if(newValue != null) {
+                comboBox22.setVisible(newValue.equals("Phase"));
+            }
         });
 
         comboBox11.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals("Saturated Mixture")) {
-                comboBox22.setVisible(false);
-                comboBox11.setVisible(false);
-                comboBox1.setValue("Quality");
+            if (newValue != null) {
+                if (newValue.equals("Saturated Mixture")) {
+                    comboBox22.setValue("Choose The Phase");
+                    comboBox22.setVisible(false);
+                    comboBox11.setVisible(false);
+                    comboBox1.setValue("Quality");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter the Quality value for the Saturated Mixture");
+                    alert.showAndWait();
+                }
             }
         });
 
         comboBox22.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals("Saturated Mixture")) {
-                comboBox22.setVisible(false);
-                comboBox11.setVisible(false);
-                comboBox2.setValue("Quality");
+            if (newValue != null) {
+                if (newValue.equals("Saturated Mixture")) {
+                    comboBox22.setValue("Choose The Phase");
+                    comboBox22.setVisible(false);
+                    comboBox11.setVisible(false);
+                    comboBox2.setValue("Quality");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter the Quality value for the Saturated Mixture");
+                    alert.showAndWait();
+                }
             }
+
         });
 
     }
@@ -91,12 +112,22 @@ public class guiController implements Initializable {
         else if ("Quality".equals(selectedOption)) {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Enthalpy", "Entropy"));
         }
+        else if ("Phase".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure","Enthalpy", "Entropy"));
+        }
     }
 
     public void find(MouseEvent mouseEvent) {
         String chosenQ1 = (String) comboBox1.getSelectionModel().getSelectedItem();
         String chosenQ2 = (String) comboBox2.getSelectionModel().getSelectedItem();
-        if (chosenQ1 != null && chosenQ2 != null) {}
+        if (chosenQ1 == null  || chosenQ2 == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Attention");
+            alert.setHeaderText(null);
+            alert.setContentText("You need to select at least two options");
+            alert.showAndWait();
+            return;
+        }
         String q1 = tF1.getText();
         String q2 = tF2.getText();
         if (!isInputsValid()){
@@ -224,9 +255,9 @@ public class guiController implements Initializable {
 
 
 
-         if (!isThirdInputValid()){
+         /*if (!isThirdInputValid()){
              return;
-         }
+         }*/
 
     }
 
@@ -239,9 +270,10 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Please enter the value of " + comboBox1.getValue());
+                alert.showAndWait();
                 return false;
             }
-            else if (!checkIfNumeric(comboBox1.getValue())) {
+            else if (!checkIfNumeric(tF1.getText())) {
                 return false;
             }
             else if (Integer.parseInt(tF1.getText()) < 0) {
@@ -249,6 +281,7 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Negative numbers are not allowed");
+                alert.showAndWait();
                 return false;
             }
             else if (Integer.parseInt(tF1.getText()) == 0) {
@@ -256,6 +289,7 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText(comboBox1.getValue() +" cannot be zero");
+                alert.showAndWait();
                 return false;
             }
         }
@@ -265,9 +299,10 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Please enter the value of " + comboBox2.getValue());
+                alert.showAndWait();
                 return false;
             }
-            else if (!checkIfNumeric(comboBox2.getValue())) {
+            else if (!checkIfNumeric(tF2.getText())) {
                 return false;
             }
             else if (Integer.parseInt(tF2.getText()) < 0) {
@@ -275,6 +310,7 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Negative numbers are not allowed");
+                alert.showAndWait();
                 return false;
             }
             else if (Integer.parseInt(tF2.getText()) == 0) {
@@ -282,6 +318,7 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText(comboBox2.getValue() +" cannot be zero");
+                alert.showAndWait();
                 return false;
             }
         }
@@ -298,6 +335,7 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Please enter the value of " + comboBox3.getValue());
+                alert.showAndWait();
                 return false;
             }
             else if (Integer.parseInt(tF3.getText()) < 0) {
@@ -305,6 +343,7 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Negative numbers are not allowed");
+                alert.showAndWait();
                 return false;
             }
             else if (Integer.parseInt(tF3.getText()) == 0) {
@@ -312,6 +351,7 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText(comboBox3.getValue() +" cannot be zero");
+                alert.showAndWait();
                 return false;
             }
         }
@@ -321,7 +361,9 @@ public class guiController implements Initializable {
 
     public boolean checkIfNumeric(String input) {
         try {
-            Double.parseDouble(input);
+            if (!input.isEmpty()) {
+                Double.parseDouble(input.trim());
+            }
             return true;
         } catch (Exception exception) {
             showAlert("Invalid Input", "The input must be a valid number.");
