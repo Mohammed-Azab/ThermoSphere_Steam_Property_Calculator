@@ -14,6 +14,7 @@ public class Main extends Application {
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.resizableProperty().setValue(Boolean.FALSE);
         stage.show();
 
     }

@@ -990,8 +990,22 @@ public class Controller {
         System.out.println(steam.toString());
     }
 
+    public DataBase getDb() {
+        return db;
+    }
 
 
+    public Steam findTheSteamUsingXS(double X, double s) {
+        Steam steam = new Steam();
+        steam.setX(X);
+        steam.setS(s);
+        return steam;
+    }
 
 
+    public Steam findTheSteamUsingVX(double v, double X) {
+    }
+
+    public Steam findTheSteamUsingSX(double S, double X) {
+    }
 }
