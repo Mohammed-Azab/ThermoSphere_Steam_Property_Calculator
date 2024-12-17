@@ -1,4 +1,3 @@
-
 .background {
     -fx-background-color: white;
     /* -fx-background-image: url("../images/FullMainBackground.jpg"); */
@@ -47,6 +46,21 @@
     -fx-border-color: #D67C4B; /* Border color */
     -fx-border-width: 1px; /* Border width */
     -fx-alignment: center; /* Center text inside the combo box */
+}
+
+.combo-box-units {
+    -fx-background-color: #D67C4B;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: white;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-size: 12px; /* Font size */
+    -fx-font-family: 'Roboto';
+    -fx-font-weight: bold;
+    -fx-padding: 0px;
+    -fx-border-color: #D67C4B;
+    -fx-border-width: 0px;
+    -fx-alignment: center;
 }
 
 

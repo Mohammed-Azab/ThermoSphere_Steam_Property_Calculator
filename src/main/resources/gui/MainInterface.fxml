@@ -10,9 +10,8 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="652.0" prefWidth="906.0" styleClass="background" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.guiController">
-   <ComboBox fx:id="comboBox1" layoutX="126.0" layoutY="103.0" prefHeight="37.0" prefWidth="223.0" promptText="First Quantity" styleClass="custom-combobox" stylesheets="@Styles.css" />
-   <ComboBox fx:id="comboBox2" layoutX="600.0" layoutY="103.0" prefHeight="37.0" prefWidth="223.0" promptText="Second Quantity" styleClass="custom-combobox" stylesheets="@Styles.css" />
-   <ComboBox fx:id="comboBox3" layoutX="363.0" layoutY="103.0" prefHeight="37.0" prefWidth="223.0" promptText="Third Quantity" visible="false" />
+   <ComboBox fx:id="comboBox1" layoutX="59.0" layoutY="108.0" prefHeight="37.0" prefWidth="223.0" promptText="First Quantity" styleClass="custom-combobox" stylesheets="@Styles.css" />
+   <ComboBox fx:id="comboBox2" layoutX="533.0" layoutY="108.0" prefHeight="37.0" prefWidth="223.0" promptText="Second Quantity" styleClass="custom-combobox" stylesheets="@Styles.css" />
    <ImageView fx:id="general" fitHeight="239.0" fitWidth="540.0" layoutX="216.0" layoutY="465.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@general.png" />
    </ImageView>
@@ -49,12 +48,11 @@
          <Font name="KacstBook" size="24.0" />
       </font>
    </Label>
-   <TextField fx:id="tF1" layoutX="126.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
-   <TextField fx:id="tF2" layoutX="600.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
-   <TextField fx:id="tF3" layoutX="363.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" visible="false" />
-   <Label layoutX="218.0" layoutY="35.0" prefHeight="54.0" prefWidth="470.0" text="Please enter 2 Qunatities">
+   <TextField fx:id="tF1" layoutX="59.0" layoutY="168.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
+   <TextField fx:id="tF2" layoutX="533.0" layoutY="168.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
+   <Label layoutX="224.0" layoutY="35.0" prefHeight="54.0" prefWidth="470.0" text="Please enter 2 Qunatities">
       <font>
-         <Font name="NimbusRoman-Bold" size="36.0" />
+         <Font name="Gargi" size="36.0" />
       </font>
    </Label>
    <ImageView fitHeight="331.0" fitWidth="517.0" layoutX="216.0" layoutY="217.0" pickOnBounds="true" preserveRatio="true">
@@ -71,6 +69,8 @@
          <Font name="NimbusRoman-Bold" size="24.0" />
       </font>
    </Label>
-   <ComboBox fx:id="comboBox11" layoutX="126.0" layoutY="158.0" prefHeight="50.0" prefWidth="223.0" promptText="Choose The Phase" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
-   <ComboBox fx:id="comboBox22" layoutX="600.0" layoutY="158.0" prefHeight="50.0" prefWidth="223.0" promptText="Choose The Phase" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
+   <ComboBox fx:id="comboBox11" layoutX="59.0" layoutY="164.0" prefHeight="50.0" prefWidth="223.0" promptText="Choose The Phase" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
+   <ComboBox fx:id="comboBox22" layoutX="533.0" layoutY="164.0" prefHeight="50.0" prefWidth="223.0" promptText="Choose The Phase" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
+   <ComboBox fx:id="unit1" layoutX="288.0" layoutY="173.0" prefHeight="31.0" prefWidth="101.0" promptText="Unit" styleClass="combo-box-units" stylesheets="@Styles.css" />
+   <ComboBox fx:id="unit2" layoutX="763.0" layoutY="173.0" prefHeight="31.0" prefWidth="101.0" promptText="Unit" styleClass="combo-box-units" stylesheets="@Styles.css" />
 </AnchorPane>

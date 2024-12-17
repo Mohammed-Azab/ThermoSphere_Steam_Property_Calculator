@@ -15,12 +15,13 @@ import java.util.ResourceBundle;
 public class guiController implements Initializable {
 
     public Label LP, LT, LV, LU, LH, LS;
-    public ComboBox<String> comboBox1, comboBox2, comboBox3, comboBox11 , comboBox22;
+    public ComboBox<String> comboBox1, comboBox2,
+                            comboBox11, comboBox22, unit1, unit2;
     public ImageView general;
     public ImageView general1;
 
     public Label type, labelType;
-    public TextField tF1, tF2, tF3;
+    public TextField tF1, tF2;
     public Button findButton;
 
     private Controller controller;
@@ -29,7 +30,6 @@ public class guiController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tF1.setVisible(true);
         tF2.setVisible(true);
-        tF3.setVisible(false);
         general1.setVisible(false);
         general.setVisible(false);
         LP.setVisible(false);
@@ -43,10 +43,21 @@ public class guiController implements Initializable {
         controller = new Controller();
         comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
         comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality","Phase"));
-        comboBox3.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
         comboBox11.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
         comboBox22.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
+
+
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
+            unit1.setValue("Unit");
+            unit1.setVisible(true);
+            if (newValue != null){
+                if(newValue.equals("Phase") || newValue.equals("Quality")){
+                    unit1.setVisible(false);
+                }
+                else {
+                    updateUnitsOptions(unit1, newValue);
+                }
+            }
             updateComboBoxOptions(comboBox2, newValue);
             if(newValue != null) {
                 comboBox11.setVisible(newValue.equals("Phase"));
@@ -54,7 +65,19 @@ public class guiController implements Initializable {
         });
 
         comboBox2.valueProperty().addListener((observable, oldValue, newValue) -> {
-            updateComboBoxOptions(comboBox1, newValue);
+            unit2.setValue("Unit");
+            unit2.setVisible(true);
+            if (newValue != null){
+                if(newValue.equals("Phase") || newValue.equals("Quality")){
+                    unit2.setVisible(false);
+                }
+                else  {
+                    updateUnitsOptions(unit2, newValue);
+                }
+            }
+            if (newValue != null) {
+                updateComboBoxOptions(comboBox1, newValue);
+            }
             if(newValue != null) {
                 comboBox22.setVisible(newValue.equals("Phase"));
             }
@@ -92,6 +115,32 @@ public class guiController implements Initializable {
             }
 
         });
+
+    }
+
+    private void updateUnitsOptions(ComboBox<String> unit, String newValue) {
+        if (newValue != null) {
+            if (newValue.equals("Temperature")) {
+                unit.setItems(FXCollections.observableArrayList("Kelvin", "Celsius"));
+                unit.setValue("Unit");
+            }
+            else if (newValue.equals("Pressure")) {
+                unit.setItems(FXCollections.observableArrayList("KPa", "MPa"));
+                unit.setValue("Unit");
+            }
+            else if (newValue.equals("Volume")) {
+                unit.setItems(FXCollections.observableArrayList("m3/kg"));
+                unit.setValue("m3/kg");
+            }
+            else if (newValue.equals("Enthalpy")) {
+                unit.setItems(FXCollections.observableArrayList("kJ/kg"));
+                unit.setValue("kJ/kg");
+            }
+            else if (newValue.equals("Entropy")) {
+                unit.setItems(FXCollections.observableArrayList("kJ/kg · K"));
+                unit.setValue("kJ/kg · K");
+            }
+        }
 
     }
 
@@ -255,9 +304,7 @@ public class guiController implements Initializable {
 
 
 
-         /*if (!isThirdInputValid()){
-             return;
-         }*/
+
 
     }
 
@@ -292,6 +339,13 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
+            else if (unit1.isVisible() && (unit1.getValue() == null) || unit1.getValue().equals("Unit")) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText(null);
+                alert.setContentText("Please select the unit of " + comboBox1.getValue());
+                alert.showAndWait();
+            }
         }
         if (tF2.isVisible()) {
             if (tF2.getText().isEmpty()){
@@ -321,6 +375,13 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
+            else if (unit2.isVisible() && (unit2.getValue() == null) || unit2.getValue().equals("Unit")) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText(null);
+                alert.setContentText("Please select the unit of " + comboBox2.getValue());
+                alert.showAndWait();
+            }
         }
 
 
@@ -328,36 +389,6 @@ public class guiController implements Initializable {
         return true;
     }
 
-    private boolean isThirdInputValid() {
-        if (tF3.isVisible()) {
-            if (tF3.getText().isEmpty()){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText(null);
-                alert.setContentText("Please enter the value of " + comboBox3.getValue());
-                alert.showAndWait();
-                return false;
-            }
-            else if (Integer.parseInt(tF3.getText()) < 0) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText(null);
-                alert.setContentText("Negative numbers are not allowed");
-                alert.showAndWait();
-                return false;
-            }
-            else if (Integer.parseInt(tF3.getText()) == 0) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText(null);
-                alert.setContentText(comboBox3.getValue() +" cannot be zero");
-                alert.showAndWait();
-                return false;
-            }
-        }
-        return true;
-
-    }
 
     public boolean checkIfNumeric(String input) {
         try {
