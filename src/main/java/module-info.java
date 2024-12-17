@@ -4,6 +4,7 @@ module steamTables {
     requires javafx.fxml;
     requires transitive javafx.graphics;
     requires org.apache.poi.ooxml;
+    requires java.desktop;
 
     exports app;
     exports gui;

@@ -96,6 +96,7 @@ public class guiController implements Initializable {
     public void find(MouseEvent mouseEvent) {
         String chosenQ1 = (String) comboBox1.getSelectionModel().getSelectedItem();
         String chosenQ2 = (String) comboBox2.getSelectionModel().getSelectedItem();
+        if (chosenQ1 != null && chosenQ2 != null) {}
         String q1 = tF1.getText();
         String q2 = tF2.getText();
         if (!isInputsValid()){
@@ -232,7 +233,6 @@ public class guiController implements Initializable {
 
 
     private boolean isInputsValid() {
-
         if (tF1.isVisible()) {
             if (tF1.getText().isEmpty()){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
