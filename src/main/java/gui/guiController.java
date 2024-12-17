@@ -40,7 +40,7 @@ public class guiController implements Initializable {
         LS.setVisible(false);
         type.setVisible(false);
         labelType.setVisible(false);
-        //controller = new Controller();
+        controller = new Controller();
         comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
         comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality","Phase"));
         comboBox3.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
