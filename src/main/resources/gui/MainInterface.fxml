@@ -29,7 +29,7 @@
          <Font name="KacstBook" size="24.0" />
       </font>
    </Label>
-   <Label fx:id="LV" layoutX="306.0" layoutY="560.0" prefHeight="31.0" prefWidth="123.0" text="5000">
+   <Label fx:id="LV" layoutX="312.0" layoutY="560.0" prefHeight="31.0" prefWidth="123.0" text="5000">
       <font>
          <Font name="KacstBook" size="24.0" />
       </font>
@@ -52,18 +52,18 @@
    <TextField fx:id="tF1" layoutX="126.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
    <TextField fx:id="tF2" layoutX="600.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" />
    <TextField fx:id="tF3" layoutX="363.0" layoutY="163.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" visible="false" />
-   <Label layoutX="305.0" layoutY="42.0" prefHeight="50.0" prefWidth="384.0" text="Please enter 2 Qunatities">
+   <Label layoutX="305.0" layoutY="42.0" prefHeight="54.0" prefWidth="470.0" text="Please enter 2 Qunatities">
       <font>
          <Font name="NimbusRoman-Bold" size="36.0" />
       </font>
    </Label>
-   <ImageView fitHeight="331.0" fitWidth="517.0" layoutX="226.0" layoutY="140.0" pickOnBounds="true" preserveRatio="true">
+   <ImageView fitHeight="331.0" fitWidth="517.0" layoutX="216.0" layoutY="217.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@Thermo.jpg" />
    </ImageView>
    <Button fx:id="findButton" layoutX="407.0" layoutY="381.0" mnemonicParsing="false" onMouseClicked="#find" onMousePressed="#find" prefHeight="31.0" prefWidth="135.0" text="Find" />
-   <Label fx:id="labelType" layoutX="332.0" layoutY="595.0" prefHeight="43.0" prefWidth="71.0" text="Type :">
+   <Label fx:id="labelType" layoutX="332.0" layoutY="595.0" prefHeight="43.0" prefWidth="135.0" text="Type :">
       <font>
-         <Font name="NimbusRoman-Bold" size="24.0" />
+         <Font name="MT Extra" size="24.0" />
       </font>
    </Label>
    <Label fx:id="type" layoutX="402.0" layoutY="595.0" prefHeight="43.0" prefWidth="259.0" text="Saturated Mixture" textFill="#d5006d">
