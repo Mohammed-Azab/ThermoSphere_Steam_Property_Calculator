@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import steamTables.Controller;
-import steamTables.DataBase;
 import steamTables.Steam;
 
 import java.net.URL;
@@ -200,7 +199,9 @@ public class guiController implements Initializable {
             if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingTP(v1, v2);
             } else if (chosenQ2.equals("Quality")) {
-                checkforQualityValue(v2);
+                if (!checkQualityValue(v2)){
+                    return;
+                }
                 steam = controller.findTheSteamUsingTX(v1, v2);
             } else if (chosenQ2.equals("Volume")) {
                 steam = controller.findTheSteamUsingTV(v1, v2);
@@ -214,7 +215,9 @@ public class guiController implements Initializable {
             if (chosenQ2.equals("Temperature")) {
                 steam = controller.findTheSteamUsingTP(v2, v1); // Reversed values
             } else if (chosenQ2.equals("Quality")) {
-                checkforQualityValue(v2);
+                if (!checkQualityValue(v2)){
+                    return;
+                }
                 steam = controller.findTheSteamUsingPX(v1, v2);
             } else if (chosenQ2.equals("Volume")) {
                 steam = controller.findTheSteamUsingPV(v1, v2);
@@ -230,7 +233,9 @@ public class guiController implements Initializable {
             } else if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingPS(v2, v1);
             } else if (chosenQ2.equals("Quality")) {
-                checkforQualityValue(v2);
+                if (!checkQualityValue(v2)){
+                    return;
+                }
                 steam = controller.findTheSteamUsingXS(v2, v1);
             }
         }
@@ -240,10 +245,16 @@ public class guiController implements Initializable {
             } else if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingPH(v2, v1);
             } else if (chosenQ2.equals("Quality")) {
+                if (!checkQualityValue(v2)){
+                    return;
+                }
                 steam = controller.findTheSteamUsingHX(v1, v2);
             }
         }
         if (chosenQ1.equals("Quality")) {
+            if (!checkQualityValue(v2)){
+                return;
+            }
             if (chosenQ2.equals("Temperature")) {
                 steam = controller.findTheSteamUsingTX(v2, v1);
             } else if (chosenQ2.equals("Pressure")) {
@@ -262,6 +273,9 @@ public class guiController implements Initializable {
             } else if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingPV(v2, v1);
             } else if (chosenQ2.equals("Quality")) {
+                if (!checkQualityValue(v2)){
+                    return;
+                }
                 steam = controller.findTheSteamUsingVX(v1, v2);
             }
         }
@@ -321,6 +335,17 @@ public class guiController implements Initializable {
 
     }
 
+    private boolean checkQualityValue(double v2) {
+        if (v2 <=1 && v2 >0){
+            return true;
+        }
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText(null);
+        alert.setContentText("Quality value is not valid, X should be between 0 and 1");
+        alert.showAndWait();
+        return false;
+    }
 
 
     private boolean isInputsValid() {
