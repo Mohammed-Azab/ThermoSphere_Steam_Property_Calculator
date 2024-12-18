@@ -1,5 +1,6 @@
 package gui;
 
+import Exceptions.NotDefinedException;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -191,122 +192,134 @@ public class guiController implements Initializable {
         if (!isInputsValid()){
             return;
         }
+        double v1 = 0, v2 = 0;
+        if (!chosenQ1.equals("Phase")){
+            v1 = Double.parseDouble(q1);
+        }
+        if (!chosenQ2.equals("Phase")){
+            v2 = Double.parseDouble(q2);
+        }
 
-        double v1 = Double.parseDouble(q1);
-        double v2 = Double.parseDouble(q2);
         Steam steam = new Steam();
-        if (chosenQ1.equals("Temperature")) {
-            if (chosenQ2.equals("Pressure")) {
-                steam = controller.findTheSteamUsingTP(v1, v2);
-            } else if (chosenQ2.equals("Quality")) {
-                if (!checkQualityValue(v2)){
+
+        try {
+            if (chosenQ1.equals("Temperature")) {
+                if (chosenQ2.equals("Pressure")) {
+                    steam = controller.findTheSteamUsingTP(v1, v2);
+                } else if (chosenQ2.equals("Quality")) {
+                    if (!checkQualityValue(v2)) {
+                        return;
+                    }
+                    steam = controller.findTheSteamUsingTX(v1, v2);
+                } else if (chosenQ2.equals("Volume")) {
+                    steam = controller.findTheSteamUsingTV(v1, v2);
+                } else if (chosenQ2.equals("Enthalpy")) {
+                    steam = controller.findTheSteamUsingTH(v1, v2);
+                } else if (chosenQ2.equals("Entropy")) {
+                    steam = controller.findTheSteamUsingTS(v1, v2);
+                }
+            }
+            if (chosenQ1.equals("Pressure")) {
+                if (chosenQ2.equals("Temperature")) {
+                    steam = controller.findTheSteamUsingTP(v2, v1); // Reversed values
+                } else if (chosenQ2.equals("Quality")) {
+                    if (!checkQualityValue(v2)) {
+                        return;
+                    }
+                    steam = controller.findTheSteamUsingPX(v1, v2);
+                } else if (chosenQ2.equals("Volume")) {
+                    steam = controller.findTheSteamUsingPV(v1, v2);
+                } else if (chosenQ2.equals("Enthalpy")) {
+                    steam = controller.findTheSteamUsingPH(v1, v2);
+                } else if (chosenQ2.equals("Entropy")) {
+                    steam = controller.findTheSteamUsingPS(v1, v2);
+                }
+            }
+            if (chosenQ1.equals("Entropy")) {
+                if (chosenQ2.equals("Temperature")) {
+                    steam = controller.findTheSteamUsingTS(v2, v1);
+                } else if (chosenQ2.equals("Pressure")) {
+                    steam = controller.findTheSteamUsingPS(v2, v1);
+                } else if (chosenQ2.equals("Quality")) {
+                    if (!checkQualityValue(v2)) {
+                        return;
+                    }
+                    steam = controller.findTheSteamUsingXS(v2, v1);
+                }
+            }
+            if (chosenQ1.equals("Enthalpy")) {
+                if (chosenQ2.equals("Temperature")) {
+                    steam = controller.findTheSteamUsingTH(v2, v1);
+                } else if (chosenQ2.equals("Pressure")) {
+                    steam = controller.findTheSteamUsingPH(v2, v1);
+                } else if (chosenQ2.equals("Quality")) {
+                    if (!checkQualityValue(v2)) {
+                        return;
+                    }
+                    steam = controller.findTheSteamUsingHX(v1, v2);
+                }
+            }
+            if (chosenQ1.equals("Quality")) {
+                if (!checkQualityValue(v2)) {
                     return;
                 }
-                steam = controller.findTheSteamUsingTX(v1, v2);
-            } else if (chosenQ2.equals("Volume")) {
-                steam = controller.findTheSteamUsingTV(v1, v2);
-            } else if (chosenQ2.equals("Enthalpy")) {
-                steam = controller.findTheSteamUsingTH(v1, v2);
-            } else if (chosenQ2.equals("Entropy")) {
-                steam = controller.findTheSteamUsingTS(v1, v2);
-            }
-        }
-        if (chosenQ1.equals("Pressure")) {
-            if (chosenQ2.equals("Temperature")) {
-                steam = controller.findTheSteamUsingTP(v2, v1); // Reversed values
-            } else if (chosenQ2.equals("Quality")) {
-                if (!checkQualityValue(v2)){
-                    return;
+                if (chosenQ2.equals("Temperature")) {
+                    steam = controller.findTheSteamUsingTX(v2, v1);
+                } else if (chosenQ2.equals("Pressure")) {
+                    steam = controller.findTheSteamUsingPX(v2, v1);
+                } else if (chosenQ2.equals("Volume")) {
+                    steam = controller.findTheSteamUsingVX(v2, v1);
+                } else if (chosenQ2.equals("Enthalpy")) {
+                    steam = controller.findTheSteamUsingHX(v2, v1);
+                } else if (chosenQ2.equals("Entropy")) {
+                    steam = controller.findTheSteamUsingSX(v2, v1); //x must be 1 or 0 or 3 element required
                 }
-                steam = controller.findTheSteamUsingPX(v1, v2);
-            } else if (chosenQ2.equals("Volume")) {
-                steam = controller.findTheSteamUsingPV(v1, v2);
-            } else if (chosenQ2.equals("Enthalpy")) {
-                steam = controller.findTheSteamUsingPH(v1, v2);
-            } else if (chosenQ2.equals("Entropy")) {
-                steam = controller.findTheSteamUsingPS(v1, v2);
             }
-        }
-        if (chosenQ1.equals("Entropy")) {
-            if (chosenQ2.equals("Temperature")) {
-                steam = controller.findTheSteamUsingTS(v2, v1);
-            } else if (chosenQ2.equals("Pressure")) {
-                steam = controller.findTheSteamUsingPS(v2, v1);
-            } else if (chosenQ2.equals("Quality")) {
-                if (!checkQualityValue(v2)){
-                    return;
+            if (chosenQ1.equals("Volume")) {
+                if (chosenQ2.equals("Temperature")) {
+                    steam = controller.findTheSteamUsingTV(v2, v1);
+                } else if (chosenQ2.equals("Pressure")) {
+                    steam = controller.findTheSteamUsingPV(v2, v1);
+                } else if (chosenQ2.equals("Quality")) {
+                    if (!checkQualityValue(v2)) {
+                        return;
+                    }
+                    steam = controller.findTheSteamUsingVX(v1, v2);
                 }
-                steam = controller.findTheSteamUsingXS(v2, v1);
             }
-        }
-        if (chosenQ1.equals("Enthalpy")) {
-            if (chosenQ2.equals("Temperature")) {
-                steam = controller.findTheSteamUsingTH(v2, v1);
-            } else if (chosenQ2.equals("Pressure")) {
-                steam = controller.findTheSteamUsingPH(v2, v1);
-            } else if (chosenQ2.equals("Quality")) {
-                if (!checkQualityValue(v2)){
-                    return;
+            if (chosenQ1.equals("Phase")) {
+                String phase = "";
+                if (comboBox11.isVisible()) {
+                    phase = comboBox11.getValue();
+                } else if (comboBox22.isVisible()) {
+                    phase = comboBox22.getValue();
+                } else {
+                    throw new IllegalArgumentException("Phase is not visible");
                 }
-                steam = controller.findTheSteamUsingHX(v1, v2);
-            }
-        }
-        if (chosenQ1.equals("Quality")) {
-            if (!checkQualityValue(v2)){
-                return;
-            }
-            if (chosenQ2.equals("Temperature")) {
-                steam = controller.findTheSteamUsingTX(v2, v1);
-            } else if (chosenQ2.equals("Pressure")) {
-                steam = controller.findTheSteamUsingPX(v2, v1);
-            } else if (chosenQ2.equals("Volume")) {
-                steam = controller.findTheSteamUsingVX(v2, v1);
-            } else if (chosenQ2.equals("Enthalpy")) {
-                steam = controller.findTheSteamUsingHX(v2, v1);
-            } else if (chosenQ2.equals("Entropy")) {
-                steam = controller.findTheSteamUsingSX(v2, v1); //x must be 1 or 0 or 3 element required
-            }
-        }
-        if (chosenQ1.equals("Volume")) {
-            if (chosenQ2.equals("Temperature")) {
-                steam = controller.findTheSteamUsingTV(v2, v1);
-            } else if (chosenQ2.equals("Pressure")) {
-                steam = controller.findTheSteamUsingPV(v2, v1);
-            } else if (chosenQ2.equals("Quality")) {
-                if (!checkQualityValue(v2)){
-                    return;
+                if (phase.equals("Saturated Liquid, \"\", \"\"")) {
+                    v1 = 0.0;
+                } else if (phase.equals("Saturated Vapour")) {
+                    v1 = 1.0;
                 }
-                steam = controller.findTheSteamUsingVX(v1, v2);
+                if (chosenQ2.equals("Temperature")) {
+                    steam = controller.findTheSteamUsingTX(v2, v1);
+                } else if (chosenQ2.equals("Pressure")) {
+                    steam = controller.findTheSteamUsingPX(v2, v1);
+                } else if (chosenQ2.equals("Volume")) {
+                    steam = controller.findTheSteamUsingVX(v2, v1);
+                } else if (chosenQ2.equals("Enthalpy")) {
+                    steam = controller.findTheSteamUsingHX(v2, v1);
+                } else if (chosenQ2.equals("Entropy")) {
+                    steam = controller.findTheSteamUsingSX(v2, v1); //x must be 1 or 0 or 3 element required
+                }
             }
         }
-        if (chosenQ1.equals("Phase")) {
-            String phase ="";
-            if (comboBox11.isVisible()){
-                phase = comboBox11.getValue();
-            }
-            else if (comboBox22.isVisible()){
-                phase = comboBox22.getValue();
-            }
-            else {
-                throw new IllegalArgumentException("Phase is not visible");
-            }
-            if (phase.equals("Saturated Liquid, \"\", \"\"")) {
-                v1 = 0.0;
-            }
-            else if (phase.equals("Saturated Vapour")){
-                v1= 1.0;
-            }
-            if (chosenQ2.equals("Temperature")) {
-                steam = controller.findTheSteamUsingTX(v2, v1);
-            } else if (chosenQ2.equals("Pressure")) {
-                steam = controller.findTheSteamUsingPX(v2, v1);
-            } else if (chosenQ2.equals("Volume")) {
-                steam = controller.findTheSteamUsingVX(v2, v1);
-            } else if (chosenQ2.equals("Enthalpy")) {
-                steam = controller.findTheSteamUsingHX(v2, v1);
-            } else if (chosenQ2.equals("Entropy")) {
-                steam = controller.findTheSteamUsingSX(v2, v1); //x must be 1 or 0 or 3 element required
-            }
+        catch (NotDefinedException nde) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("Missing or Incomplete Data");
+            alert.setContentText("The specified steam is not defined, or the tables do not contain all the required data.");
+            alert.showAndWait();
         }
 
 
@@ -355,13 +368,15 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText("Please enter the value of " + comboBox1.getValue());
-                alert.showAndWait();
+                if (!comboBox1.getValue().equals("Phase")) {
+                    alert.showAndWait();
+                }
                 return false;
             }
             else if (!checkIfNumeric(tF1.getText())) {
                 return false;
             }
-            else if (Integer.parseInt(tF1.getText()) < 0) {
+            else if (Double.parseDouble(tF1.getText()) < 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -369,7 +384,7 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
-            else if (Integer.parseInt(tF1.getText()) == 0) {
+            else if (Double.parseDouble(tF1.getText()) == 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -397,7 +412,7 @@ public class guiController implements Initializable {
             else if (!checkIfNumeric(tF2.getText())) {
                 return false;
             }
-            else if (Integer.parseInt(tF2.getText()) < 0) {
+            else if (Double.parseDouble(tF2.getText()) < 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -405,7 +420,7 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
-            else if (Integer.parseInt(tF2.getText()) == 0) {
+            else if (Double.parseDouble(tF2.getText()) == 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -426,6 +441,17 @@ public class guiController implements Initializable {
 
         return true;
     }
+
+    private void isValidNumber(String input) {
+        if (!input.matches("^[1-9][0-9]*$")){ // The pattern starts with nonZero element
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText( input +"is not a valid input, Please enter a valid number Format");
+            alert.showAndWait();
+        }
+    }
+
 
 
     public boolean checkIfNumeric(String input) {
