@@ -48,7 +48,7 @@ public class guiController implements Initializable {
 
 
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
-            unit1.setValue("Unit");
+            unit1.setPromptText("Unit");
             unit1.setVisible(true);
             if (newValue != null){
                 if(newValue.equals("Phase") || newValue.equals("Quality")){
@@ -58,25 +58,33 @@ public class guiController implements Initializable {
                     updateUnitsOptions(unit1, newValue);
                 }
             }
-            updateComboBoxOptions(comboBox2, newValue);
+            if (!updateComboBoxOptions(comboBox2, newValue)){
+                unit2.getItems().clear();
+                unit2.setValue(null);
+                unit2.setPromptText("Unit");
+            }
             if(newValue != null) {
                 comboBox11.setVisible(newValue.equals("Phase"));
             }
         });
 
         comboBox2.valueProperty().addListener((observable, oldValue, newValue) -> {
-            unit2.setValue("Unit");
+            unit2.setPromptText("Unit");
             unit2.setVisible(true);
             if (newValue != null){
                 if(newValue.equals("Phase") || newValue.equals("Quality")){
                     unit2.setVisible(false);
                 }
-                else  {
+                else {
                     updateUnitsOptions(unit2, newValue);
                 }
             }
             if (newValue != null) {
-                updateComboBoxOptions(comboBox1, newValue);
+                if (!updateComboBoxOptions(comboBox1, newValue)){
+                    unit1.getItems().clear();
+                    unit1.setValue(null);
+                    unit1.setPromptText("Unit");
+                }
             }
             if(newValue != null) {
                 comboBox22.setVisible(newValue.equals("Phase"));
@@ -122,11 +130,11 @@ public class guiController implements Initializable {
         if (newValue != null) {
             if (newValue.equals("Temperature")) {
                 unit.setItems(FXCollections.observableArrayList("Kelvin", "Celsius"));
-                unit.setValue("Unit");
+                unit.setValue("Kelvin");
             }
             else if (newValue.equals("Pressure")) {
                 unit.setItems(FXCollections.observableArrayList("KPa", "MPa"));
-                unit.setValue("Unit");
+                unit.setValue("MPa");
             }
             else if (newValue.equals("Volume")) {
                 unit.setItems(FXCollections.observableArrayList("m3/kg"));
@@ -144,13 +152,14 @@ public class guiController implements Initializable {
 
     }
 
-    private void updateComboBoxOptions(ComboBox<String> comboBox, String selectedOption) {
+    private boolean updateComboBoxOptions(ComboBox<String> comboBox, String selectedOption) {
+        String currentOption = comboBox.getValue();
         if ("Temperature".equals(selectedOption)) {
             comboBox.setItems(FXCollections.observableArrayList("Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
         } else if ("Pressure".equals(selectedOption)) {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
         } else if ("Volume".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Enthalpy", "Entropy", "Quality", "Phase"));
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
         }
         else if ("Enthalpy".equals(selectedOption)) {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
@@ -159,11 +168,12 @@ public class guiController implements Initializable {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure" , "Quality", "Phase"));
         }
         else if ("Quality".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Enthalpy", "Entropy"));
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy"));
         }
         else if ("Phase".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure","Enthalpy", "Entropy"));
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy"));
         }
+        return comboBox.getItems().contains(currentOption);
     }
 
     public void find(MouseEvent mouseEvent) {
@@ -190,6 +200,7 @@ public class guiController implements Initializable {
             if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingTP(v1, v2);
             } else if (chosenQ2.equals("Quality")) {
+                checkforQualityValue(v2);
                 steam = controller.findTheSteamUsingTX(v1, v2);
             } else if (chosenQ2.equals("Volume")) {
                 steam = controller.findTheSteamUsingTV(v1, v2);
@@ -203,6 +214,7 @@ public class guiController implements Initializable {
             if (chosenQ2.equals("Temperature")) {
                 steam = controller.findTheSteamUsingTP(v2, v1); // Reversed values
             } else if (chosenQ2.equals("Quality")) {
+                checkforQualityValue(v2);
                 steam = controller.findTheSteamUsingPX(v1, v2);
             } else if (chosenQ2.equals("Volume")) {
                 steam = controller.findTheSteamUsingPV(v1, v2);
@@ -218,6 +230,7 @@ public class guiController implements Initializable {
             } else if (chosenQ2.equals("Pressure")) {
                 steam = controller.findTheSteamUsingPS(v2, v1);
             } else if (chosenQ2.equals("Quality")) {
+                checkforQualityValue(v2);
                 steam = controller.findTheSteamUsingXS(v2, v1);
             }
         }
