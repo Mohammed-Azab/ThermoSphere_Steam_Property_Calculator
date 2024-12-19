@@ -12,38 +12,38 @@
 <AnchorPane prefHeight="652.0" prefWidth="906.0" styleClass="background" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.guiController">
    <ComboBox fx:id="comboBox1" layoutX="59.0" layoutY="108.0" prefHeight="37.0" prefWidth="223.0" promptText="First Quantity" styleClass="custom-combobox" stylesheets="@Styles.css" />
    <ComboBox fx:id="comboBox2" layoutX="533.0" layoutY="108.0" prefHeight="37.0" prefWidth="223.0" promptText="Second Quantity" styleClass="custom-combobox" stylesheets="@Styles.css" />
-   <ImageView fx:id="general" fitHeight="239.0" fitWidth="540.0" layoutX="216.0" layoutY="465.0" pickOnBounds="true" preserveRatio="true">
+   <ImageView fx:id="general" fitHeight="87.0" fitWidth="669.0" layoutX="170.0" layoutY="466.0" pickOnBounds="true">
       <Image url="@general.png" />
    </ImageView>
-   <ImageView fx:id="general1" fitHeight="68.0" fitWidth="81.0" layoutX="126.0" layoutY="480.0" pickOnBounds="true" preserveRatio="true">
+   <ImageView fx:id="general1" fitHeight="68.0" fitWidth="81.0" layoutX="68.0" layoutY="478.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@P.png" />
    </ImageView>
-   <Label fx:id="LP" layoutX="134.0" layoutY="560.0" prefHeight="24.0" prefWidth="101.0" text="5000">
+   <Label fx:id="LP" layoutX="68.0" layoutY="553.0" prefHeight="24.0" prefWidth="101.0" text="5000">
       <font>
          <Font name="KacstBook" size="24.0" />
       </font>
    </Label>
-   <Label fx:id="LT" layoutX="223.0" layoutY="560.0" prefHeight="24.0" prefWidth="101.0" text="5000">
+   <Label fx:id="LT" layoutX="177.0" layoutY="553.0" prefHeight="24.0" prefWidth="101.0" text="5000">
       <font>
          <Font name="KacstBook" size="24.0" />
       </font>
    </Label>
-   <Label fx:id="LV" layoutX="312.0" layoutY="560.0" prefHeight="31.0" prefWidth="123.0" text="5000">
+   <Label fx:id="LV" layoutX="290.0" layoutY="553.0" prefHeight="31.0" prefWidth="123.0" text="5000">
       <font>
          <Font name="KacstBook" size="24.0" />
       </font>
    </Label>
-   <Label fx:id="LU" layoutX="429.0" layoutY="560.0" prefHeight="31.0" prefWidth="135.0" text="5000">
+   <Label fx:id="LU" layoutX="445.0" layoutY="553.0" prefHeight="31.0" prefWidth="123.0" text="5000">
       <font>
          <Font name="KacstBook" size="24.0" />
       </font>
    </Label>
-   <Label fx:id="LH" layoutX="548.0" layoutY="560.0" prefHeight="31.0" prefWidth="109.0" text="5000">
+   <Label fx:id="LH" layoutX="580.0" layoutY="553.0" prefHeight="31.0" prefWidth="109.0" text="5000">
       <font>
          <Font name="KacstBook" size="24.0" />
       </font>
    </Label>
-   <Label fx:id="LS" layoutX="657.0" layoutY="560.0" prefHeight="31.0" prefWidth="123.0" text="5000">
+   <Label fx:id="LS" layoutX="710.0" layoutY="553.0" prefHeight="31.0" prefWidth="123.0" text="5000">
       <font>
          <Font name="KacstBook" size="24.0" />
       </font>
