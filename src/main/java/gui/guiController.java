@@ -195,10 +195,17 @@ public class guiController implements Initializable {
         double v1 = 0, v2 = 0;
         if (!chosenQ1.equals("Phase")){
             v1 = Double.parseDouble(q1);
+            if (!isValidNumber(""+v1)){
+                return;
+            }
         }
         if (!chosenQ2.equals("Phase")){
             v2 = Double.parseDouble(q2);
+            if (!isValidNumber(""+v2)){
+                return;
+            }
         }
+
 
         Steam steam = new Steam();
 
@@ -320,10 +327,10 @@ public class guiController implements Initializable {
             alert.setHeaderText("Missing or Incomplete Data");
             alert.setContentText("The specified steam is not defined, or the tables do not contain all the required data.");
             alert.showAndWait();
+            return;
         }
 
 
-        // If none of the conditions matched, you can add an alert or log an error.
         if (steam == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -332,19 +339,32 @@ public class guiController implements Initializable {
             alert.showAndWait();
             return;
         }
+        showResults(steam);
 
 
 
 
 
+    }
 
-
-
-
-
-
-
-
+    private void showResults(Steam steam) {
+        LP.setText(""+steam.getP());
+        LT.setText(""+steam.getT());
+        LV.setText(""+steam.getV());
+        LU.setText(""+steam.getU());
+        LH.setText(""+steam.getH());
+        LS.setText(""+steam.getS());
+        LP.setVisible(true);
+        LT.setVisible(true);
+        LV.setVisible(true);
+        LU.setVisible(true);
+        LH.setVisible(true);
+        LS.setVisible(true);
+        general1.setVisible(true);
+        general.setVisible(true);
+        type.setVisible(true);
+        labelType.setVisible(true);
+        type.setText(steam.getSteamPhase().toString());
 
     }
 
@@ -373,7 +393,7 @@ public class guiController implements Initializable {
                 }
                 return false;
             }
-            else if (!checkIfNumeric(tF1.getText())) {
+            else if (!checkIfNumeric(tF1.getText(),comboBox1.getValue())) {
                 return false;
             }
             else if (Double.parseDouble(tF1.getText()) < 0) {
@@ -409,7 +429,7 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
-            else if (!checkIfNumeric(tF2.getText())) {
+            else if (!checkIfNumeric(tF2.getText(), comboBox2.getValue())) {
                 return false;
             }
             else if (Double.parseDouble(tF2.getText()) < 0) {
@@ -442,26 +462,28 @@ public class guiController implements Initializable {
         return true;
     }
 
-    private void isValidNumber(String input) {
+    private boolean isValidNumber(String input) {
         if (!input.matches("^[1-9][0-9]*$")){ // The pattern starts with nonZero element
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
-            alert.setContentText( input +"is not a valid input, Please enter a valid number Format");
+            alert.setContentText( input +" is not a valid input, Please enter a valid number Format");
             alert.showAndWait();
+            return false;
         }
+        return true;
     }
 
 
 
-    public boolean checkIfNumeric(String input) {
+    public boolean checkIfNumeric(String input, String quantity) {
         try {
             if (!input.isEmpty()) {
                 Double.parseDouble(input.trim());
             }
             return true;
         } catch (Exception exception) {
-            showAlert("Invalid Input", "The input must be a valid number.");
+            showAlert("Invalid Input", "The value of The "+ quantity + " must be a valid number.");
             return false;
         }
     }
