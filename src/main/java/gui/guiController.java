@@ -195,15 +195,9 @@ public class guiController implements Initializable {
         double v1 = 0, v2 = 0;
         if (!chosenQ1.equals("Phase")){
             v1 = Double.parseDouble(q1);
-            if (!isValidNumber(""+v1)){
-                return;
-            }
         }
         if (!chosenQ2.equals("Phase")){
             v2 = Double.parseDouble(q2);
-            if (!isValidNumber(""+v2)){
-                return;
-            }
         }
 
 
@@ -462,37 +456,36 @@ public class guiController implements Initializable {
         return true;
     }
 
-    private boolean isValidNumber(String input) {
-        if (!input.matches("^[1-9][0-9]*$")){ // The pattern starts with nonZero element
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText( input +" is not a valid input, Please enter a valid number Format");
-            alert.showAndWait();
-            return false;
-        }
-        return true;
-    }
-
-
 
     public boolean checkIfNumeric(String input, String quantity) {
+        if (input.charAt(0) == '0' && input.length() > 1 && input.charAt(1) != '.') {
+            showAlert("Leading zeros are not allowed.");
+            return false;
+        }
         try {
             if (!input.isEmpty()) {
                 Double.parseDouble(input.trim());
             }
             return true;
         } catch (Exception exception) {
-            showAlert("Invalid Input", "The value of The "+ quantity + " must be a valid number.");
+            showAlert("Invalid Input", "The value of The " + quantity + " must be a valid number.");
             return false;
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showAlert(String title ,String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }
