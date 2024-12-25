@@ -73,4 +73,6 @@
    <ComboBox fx:id="comboBox22" layoutX="533.0" layoutY="164.0" prefHeight="50.0" prefWidth="223.0" promptText="Choose The Phase" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
    <ComboBox fx:id="unit1" layoutX="288.0" layoutY="173.0" prefHeight="31.0" prefWidth="101.0" promptText="Unit" styleClass="combo-box-units" stylesheets="@Styles.css" />
    <ComboBox fx:id="unit2" layoutX="763.0" layoutY="173.0" prefHeight="31.0" prefWidth="101.0" promptText="Unit" styleClass="combo-box-units" stylesheets="@Styles.css" />
+   <ComboBox fx:id="comboBox3" layoutX="296.0" layoutY="108.0" prefHeight="37.0" prefWidth="223.0" promptText="Third Quantity" styleClass="custom-combobox" stylesheets="@Styles.css" visible="false" />
+   <TextField fx:id="tF3" layoutX="296.0" layoutY="168.0" prefHeight="37.0" prefWidth="223.0" styleClass="custom-textfield" stylesheets="@Styles.css" visible="false" />
 </AnchorPane>
