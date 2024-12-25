@@ -984,6 +984,87 @@ public class Controller {
         return findTheSteamUsingUX(phase.getX(), U);
     }
 
+
+    public Steam findTheSteamUsingXS(double X, double s) {
+        return findTheSteamUsingSX(s,X);
+    }
+
+
+    public Steam findTheSteamUsingVX(double v, double X) { // need to be Tested
+        Steam steam = new Steam();
+        steam.setV(v);
+        steam.setX(X);
+        int index = X==0? 2 : X==1? 3 : -1;
+        double [][] saturated = db.getSaturatedTableP();
+        boolean found = false;
+        int row=0;
+        if (index != -1) {
+            for (int i = 0; i < saturated.length; i++) {
+                if (saturated[i][index] == v) {
+                    found = true;
+                    row = i;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new NotDefinedException();
+            }
+            steam.setP(saturated[row][0]);
+            steam.setT(saturated[row][1]);
+            if (steam.getX()==1){
+                steam.setU(saturated[row][6]);
+                steam.setH(saturated[row][9]);
+                steam.setS(saturated[row][12]);
+            }
+            else if (steam.getX()==0){
+                steam.setU(saturated[row][4]);
+                steam.setH(saturated[row][7]);
+                steam.setS(saturated[row][10]);
+            }
+        }
+        else {
+            throw new NotDefinedException();
+        }
+        return steam;
+    }
+
+    public Steam findTheSteamUsingSX(double S, double X) { // need to be Tested // handle the compressed Liquid and Superheated situation
+        Steam steam = new Steam();
+        steam.setS(S);
+        steam.setX(X);
+        int index = X==0? 10 : X==1? 12 : -1;
+        double [][] saturated = db.getSaturatedTableP();
+        boolean found = false;
+        int row=0;
+        if (index != -1) {
+            for (int i = 0; i < saturated.length; i++) {
+                if (saturated[i][index] == S) {
+                    found = true;
+                    row = i;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new NotDefinedException();
+            }
+            steam.setP(saturated[row][0]);
+            steam.setT(saturated[row][1]);
+            if (steam.getX()==1){
+                steam.setV(saturated[row][3]);
+                steam.setU(saturated[row][6]);
+                steam.setH(saturated[row][9]);
+            }
+            else if (steam.getX()==0){
+                steam.setV(saturated[row][2]);
+                steam.setU(saturated[row][4]);
+                steam.setH(saturated[row][7]);
+            }
+        }
+        else {
+            throw new NotDefinedException();
+        }
+        return steam;
+    }
     public static void main(String args []){
         Controller controller = new Controller();
         Steam steam = controller.findTheSteamUsingTP(120.21, 200);
@@ -992,29 +1073,6 @@ public class Controller {
 
     public DataBase getDb() {
         return db;
-    }
-
-
-    public Steam findTheSteamUsingXS(double X, double s) {
-        Steam steam = new Steam();
-        steam.setX(X);
-        steam.setS(s);
-        return steam;
-    }
-
-
-    public Steam findTheSteamUsingVX(double v, double X) {
-        Steam steam = new Steam();
-        steam.setV(v);
-        steam.setX(X);
-        return steam;
-    }
-
-    public Steam findTheSteamUsingSX(double S, double X) {
-        Steam steam = new Steam();
-        steam.setS(S);
-        steam.setX(X);
-        return steam;
     }
 }
 
