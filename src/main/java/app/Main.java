@@ -7,13 +7,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-
 import java.util.Objects;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws Exception { // need to add the X in GUi
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/MainInterface.fxml"));
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
@@ -31,12 +30,12 @@ public class Main extends Application {
             MediaPlayer backgroundMediaPlayer = new MediaPlayer(backgroundMusic);
             backgroundMediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the music
             backgroundMediaPlayer.play();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.err.println("Failed to load background music: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     public static void main(String[] args) {
         launch(args);
