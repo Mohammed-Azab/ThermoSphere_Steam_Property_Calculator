@@ -15,13 +15,13 @@ import java.util.ResourceBundle;
 public class guiController implements Initializable {
 
     public Label LP, LT, LV, LU, LH, LS;
-    public ComboBox<String> comboBox1, comboBox2,
+    public ComboBox<String> comboBox1, comboBox2, comboBox3,
                             comboBox11, comboBox22, unit1, unit2;
     public ImageView general;
     public ImageView general1;
 
     public Label type, labelType;
-    public TextField tF1, tF2;
+    public TextField tF1, tF2, tF3;
     public Button findButton;
 
     private Controller controller;
@@ -43,8 +43,8 @@ public class guiController implements Initializable {
         controller = new Controller();
         comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
         comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality","Phase"));
-        comboBox11.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
-        comboBox22.setItems(FXCollections.observableArrayList("Saturated Liquid", "Saturated Vapour", "Saturated Mixture"));
+        comboBox11.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
+        comboBox22.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
 
 
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -58,7 +58,7 @@ public class guiController implements Initializable {
                     updateUnitsOptions(unit1, newValue);
                 }
             }
-            if (!updateComboBoxOptions(comboBox2, newValue)){
+            if (updateComboBoxOptions(comboBox2, newValue)){
                 unit2.getItems().clear();
                 unit2.setValue(null);
                 unit2.setPromptText("Unit");
@@ -80,7 +80,7 @@ public class guiController implements Initializable {
                 }
             }
             if (newValue != null) {
-                if (!updateComboBoxOptions(comboBox1, newValue)){
+                if (updateComboBoxOptions(comboBox1, newValue)){
                     unit1.getItems().clear();
                     unit1.setValue(null);
                     unit1.setPromptText("Unit");
@@ -94,7 +94,7 @@ public class guiController implements Initializable {
         comboBox11.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.equals("Saturated Mixture")) {
-                    comboBox22.setValue("Choose The Phase");
+                    comboBox11.setValue("Choose The Phase");
                     comboBox22.setVisible(false);
                     comboBox11.setVisible(false);
                     comboBox1.setValue("Quality");
@@ -103,6 +103,16 @@ public class guiController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("Please enter the Quality value for the Saturated Mixture");
                     alert.showAndWait();
+                }
+                else if (newValue.equals("Compressed Liquid")) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter two more Qualities");
+                    alert.showAndWait();
+                    comboBox3.setVisible(true);
+                    unit1.setVisible(false);
+                    updateAccordingComp();
                 }
             }
         });
@@ -130,7 +140,7 @@ public class guiController implements Initializable {
         if (newValue != null) {
             if (newValue.equals("Temperature")) {
                 unit.setItems(FXCollections.observableArrayList("Kelvin", "Celsius"));
-                unit.setValue("Kelvin");
+                unit.setValue("Celsius");
             }
             else if (newValue.equals("Pressure")) {
                 unit.setItems(FXCollections.observableArrayList("KPa", "MPa"));
@@ -173,7 +183,12 @@ public class guiController implements Initializable {
         else if ("Phase".equals(selectedOption)) {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy"));
         }
-        return comboBox.getItems().contains(currentOption);
+        return !comboBox.getItems().contains(currentOption);
+    }
+
+    private void updateAccordingComp() {
+        comboBox3.setItems(FXCollections.observableArrayList("Pressure (Mpa)"));
+        comboBox2.setValue("Temperature");
     }
 
     public void find(MouseEvent mouseEvent) {
@@ -200,11 +215,11 @@ public class guiController implements Initializable {
             v2 = Double.parseDouble(q2);
         }
 
-
         Steam steam = new Steam();
 
         try {
             if (chosenQ1.equals("Temperature")) {
+                v1 = unit1.getValue().equals("Celsius")? v1 : v1-273;
                 if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingTP(v1, v2);
                 } else if (chosenQ2.equals("Quality")) {
@@ -222,7 +237,8 @@ public class guiController implements Initializable {
             }
             if (chosenQ1.equals("Pressure")) {
                 if (chosenQ2.equals("Temperature")) {
-                    steam = controller.findTheSteamUsingTP(v2, v1); // Reversed values
+                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
+                    steam = controller.findTheSteamUsingTP(v2, v1);
                 } else if (chosenQ2.equals("Quality")) {
                     if (!checkQualityValue(v2)) {
                         return;
@@ -238,6 +254,7 @@ public class guiController implements Initializable {
             }
             if (chosenQ1.equals("Entropy")) {
                 if (chosenQ2.equals("Temperature")) {
+                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSteamUsingTS(v2, v1);
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPS(v2, v1);
@@ -250,6 +267,7 @@ public class guiController implements Initializable {
             }
             if (chosenQ1.equals("Enthalpy")) {
                 if (chosenQ2.equals("Temperature")) {
+                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSteamUsingTH(v2, v1);
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPH(v2, v1);
@@ -265,6 +283,7 @@ public class guiController implements Initializable {
                     return;
                 }
                 if (chosenQ2.equals("Temperature")) {
+                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSteamUsingTX(v2, v1);
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPX(v2, v1);
@@ -278,6 +297,7 @@ public class guiController implements Initializable {
             }
             if (chosenQ1.equals("Volume")) {
                 if (chosenQ2.equals("Temperature")) {
+                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSteamUsingTV(v2, v1);
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPV(v2, v1);
@@ -297,12 +317,13 @@ public class guiController implements Initializable {
                 } else {
                     throw new IllegalArgumentException("Phase is not visible");
                 }
-                if (phase.equals("Saturated Liquid, \"\", \"\"")) {
+                if (phase.equals("Saturated Liquid")) {
                     v1 = 0.0;
                 } else if (phase.equals("Saturated Vapour")) {
                     v1 = 1.0;
                 }
                 if (chosenQ2.equals("Temperature")) {
+                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSteamUsingTX(v2, v1);
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPX(v2, v1);
