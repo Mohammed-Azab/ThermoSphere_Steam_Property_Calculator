@@ -223,7 +223,7 @@ public class guiController implements Initializable {
                 if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingTP(v1, v2);
                 } else if (chosenQ2.equals("Quality")) {
-                    if (!checkQualityValue(v2)) {
+                    if (checkQualityValue(v2)) {
                         return;
                     }
                     steam = controller.findTheSteamUsingTX(v1, v2);
@@ -240,7 +240,7 @@ public class guiController implements Initializable {
                     v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSteamUsingTP(v2, v1);
                 } else if (chosenQ2.equals("Quality")) {
-                    if (!checkQualityValue(v2)) {
+                    if (checkQualityValue(v2)) {
                         return;
                     }
                     steam = controller.findTheSteamUsingPX(v1, v2);
@@ -259,7 +259,7 @@ public class guiController implements Initializable {
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPS(v2, v1);
                 } else if (chosenQ2.equals("Quality")) {
-                    if (!checkQualityValue(v2)) {
+                    if (checkQualityValue(v2)) {
                         return;
                     }
                     steam = controller.findTheSteamUsingXS(v2, v1);
@@ -272,14 +272,14 @@ public class guiController implements Initializable {
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPH(v2, v1);
                 } else if (chosenQ2.equals("Quality")) {
-                    if (!checkQualityValue(v2)) {
+                    if (checkQualityValue(v2)) {
                         return;
                     }
                     steam = controller.findTheSteamUsingHX(v1, v2);
                 }
             }
             if (chosenQ1.equals("Quality")) {
-                if (!checkQualityValue(v2)) {
+                if (checkQualityValue(v2)) {
                     return;
                 }
                 if (chosenQ2.equals("Temperature")) {
@@ -302,7 +302,7 @@ public class guiController implements Initializable {
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPV(v2, v1);
                 } else if (chosenQ2.equals("Quality")) {
-                    if (!checkQualityValue(v2)) {
+                    if (checkQualityValue(v2)) {
                         return;
                     }
                     steam = controller.findTheSteamUsingVX(v1, v2);
@@ -384,21 +384,21 @@ public class guiController implements Initializable {
     }
 
     private boolean checkQualityValue(double v2) {
-        if (v2 <=1 && v2 >0){
+        if (v2 <0 || v2 >1){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Quality value is not valid, X should be between 0 and 1");
+            alert.showAndWait();
             return true;
         }
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setHeaderText(null);
-        alert.setContentText("Quality value is not valid, X should be between 0 and 1");
-        alert.showAndWait();
         return false;
     }
 
 
     private boolean isInputsValid() {
-        if (tF1.isVisible()) {
-            if (tF1.getText().isEmpty()){
+        if (!comboBox1.getValue().equals("Phase") && tF1.isVisible()) {
+            if (tF1.getText().isEmpty() && !comboBox1.getValue().equals("Phase")){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -419,7 +419,7 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
-            else if (Double.parseDouble(tF1.getText()) == 0) {
+            else if (Double.parseDouble(tF1.getText()) == 0 && !comboBox1.getValue().equals("Quality")) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -427,7 +427,7 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
-            else if (unit1.isVisible() && (unit1.getValue() == null) || unit1.getValue().equals("Unit")) {
+            else if (unit1.isVisible() && ((unit1.getValue() == null) || unit1.getValue().equals("Unit"))) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning");
                 alert.setHeaderText(null);
@@ -435,8 +435,8 @@ public class guiController implements Initializable {
                 alert.showAndWait();
             }
         }
-        if (tF2.isVisible()) {
-            if (tF2.getText().isEmpty()){
+        if (!comboBox2.getValue().equals("Phase") && tF2.isVisible()) {
+            if (tF2.getText().isEmpty() && !comboBox2.getValue().equals("Phase")) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -455,7 +455,7 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
-            else if (Double.parseDouble(tF2.getText()) == 0) {
+            else if (Double.parseDouble(tF2.getText()) == 0 && !comboBox2.getValue().equals("Quality")) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -463,7 +463,7 @@ public class guiController implements Initializable {
                 alert.showAndWait();
                 return false;
             }
-            else if (unit2.isVisible() && (unit2.getValue() == null) || unit2.getValue().equals("Unit")) {
+            else if (unit2.isVisible() && ((unit2.getValue() == null) || unit2.getValue().equals("Unit"))) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning");
                 alert.setHeaderText(null);
