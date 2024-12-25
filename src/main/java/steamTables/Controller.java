@@ -1,6 +1,7 @@
 package steamTables;
 
 
+import Exceptions.MoreInfoNeeded;
 import Exceptions.NotDefinedException;
 
 public class Controller {
@@ -35,11 +36,11 @@ public class Controller {
         if (T2 > T){ //CompressedLiquid
             found = false;
             double P2 = P;
+            P /= 1000;
             if (P<5){
                 saturated = db.getSaturatedTableT();
                 for (int i = 0; i < saturated.length; i++) {
                     if ( saturated[i][0] == T ) {
-                        System.out.println(saturated[i][0]);
                         found =true;
                         row=i;
                         P2 = saturated[i][1];
@@ -54,14 +55,15 @@ public class Controller {
                 steam.setU(saturated[row][4]);
                 steam.setH(saturated[row][7]);
                 steam.setS(saturated[row][10]);
+                return steam;
             }
             else {
                 steam.setSteamPhase(SteamPhase.CompressedLiquid);
-                steam.setX(0);
-                double [][] compressed=  db.getCompressedLiquidTable();
+                double [][] compressed =  db.getCompressedLiquidTable();
                 found =false;
                 for (int i = 0; i < compressed.length; i++) {
-                    if (compressed[i][0] == P ) {
+                    if (compressed[i][0] == P && compressed[i][1] == T ) {
+                        System.out.println("entered");
                         found =true;
                         row=i;
                         break;
@@ -70,12 +72,12 @@ public class Controller {
                 if (!found) {
                     throw new NotDefinedException();
                 }
-                steam.setX(0);
                 steam.setT(T);
                 steam.setV(compressed[row][2]);
                 steam.setU(compressed[row][3]);
                 steam.setH(compressed[row][4]);
                 steam.setS(compressed[row][5]);
+                return steam;
             }
         }
         if (T2 == T){
@@ -85,14 +87,15 @@ public class Controller {
             steam.setU(saturated[row][4]);
             steam.setH(saturated[row][7]);
             steam.setS(saturated[row][10]);
+            return steam;
         }
         else {
             steam.setSteamPhase(SteamPhase.SuperHeatedWater);
-            steam.setX(1);
             double [][] superHeated = db.getSuperHeatedTable();
             found =false;
+            P/=1000; // from Kpa to Mpa
             for (int i = 0; i < superHeated.length; i++) {
-                if (superHeated[i][0] == P ) {
+                if (superHeated[i][0] == P && superHeated[i][1] == T ) {
                     found =true;
                     row=i;
                     break;
@@ -106,9 +109,9 @@ public class Controller {
             steam.setU(superHeated[row][3]);
             steam.setH(superHeated[row][4]);
             steam.setS(superHeated[row][5]);
+            return steam;
         }
 
-        return steam;
     }
 
     // Find Steam Using Temperature and Volume
@@ -119,6 +122,19 @@ public class Controller {
         if (T >= steam.getCriticalTemperature()) { // superheated
             steam.setSteamPhase(SteamPhase.SuperHeatedWater);
             steam.setX(1);
+            double [][] SuperH = db.getSuperHeatedTable();
+            boolean found = false;
+            for (int i = 0; i < SuperH.length; i++) {
+                if (SuperH[i][1] == T) {
+                    found =true;
+                    steam.setSteamPhase(SteamPhase.SuperHeatedWater);
+                    steam.setP(SuperH[i][0]);
+                    steam.setU(SuperH[i][2]);
+                    steam.setH(SuperH[i][3]);
+                    steam.setS(SuperH[i][4]);
+                    return steam;
+                }
+            }
         }
         else {
             double [][] saturated = db.getSaturatedTableT();
@@ -990,7 +1006,7 @@ public class Controller {
     }
 
 
-    public Steam findTheSteamUsingVX(double v, double X) { // need to be Tested
+    public Steam findTheSteamUsingVX(double v, double X) { // need to be Tested .... nicht mix
         Steam steam = new Steam();
         steam.setV(v);
         steam.setX(X);
@@ -1028,7 +1044,7 @@ public class Controller {
         return steam;
     }
 
-    public Steam findTheSteamUsingSX(double S, double X) { // need to be Tested // handle the compressed Liquid and Superheated situation
+    public Steam findTheSteamUsingSX(double S, double X) { //done Sat    nicht mix
         Steam steam = new Steam();
         steam.setS(S);
         steam.setX(X);
@@ -1061,7 +1077,7 @@ public class Controller {
             }
         }
         else {
-            throw new NotDefinedException();
+            throw new MoreInfoNeeded("SX is not defined");
         }
         return steam;
     }

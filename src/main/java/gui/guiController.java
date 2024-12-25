@@ -67,7 +67,6 @@ public class guiController implements Initializable {
                 comboBox11.setVisible(newValue.equals("Phase"));
             }
         });
-
         comboBox2.valueProperty().addListener((observable, oldValue, newValue) -> {
             unit2.setPromptText("Unit");
             unit2.setVisible(true);
@@ -217,6 +216,13 @@ public class guiController implements Initializable {
 
         Steam steam = new Steam();
 
+        if (chosenQ1.equals("Pressure")){
+            v1 = unit1.getValue().equals("MPa") ? v1 * 1000 : v1;
+        }
+        else if (chosenQ2.equals("Pressure")){
+            v2 = unit2.getValue().equals("MPa") ? v2 * 1000 : v2;
+        }
+
         try {
             if (chosenQ1.equals("Temperature")) {
                 v1 = unit1.getValue().equals("Celsius")? v1 : v1-273;
@@ -363,7 +369,7 @@ public class guiController implements Initializable {
     }
 
     private void showResults(Steam steam) {
-        LP.setText(""+steam.getP());
+        LP.setText(""+steam.getP()/1000);
         LT.setText(""+steam.getT());
         LV.setText(""+steam.getV());
         LU.setText(""+steam.getU());
@@ -398,7 +404,7 @@ public class guiController implements Initializable {
 
     private boolean isInputsValid() {
         if (!comboBox1.getValue().equals("Phase") && tF1.isVisible()) {
-            if (tF1.getText().isEmpty() && !comboBox1.getValue().equals("Phase")){
+            if (tF1.getText().isEmpty()){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -424,8 +430,10 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText(comboBox1.getValue() +" cannot be zero");
-                alert.showAndWait();
-                return false;
+                if (!comboBox1.getValue().equals("Temperature")) {
+                    alert.showAndWait();
+                    return false;
+                }
             }
             else if (unit1.isVisible() && ((unit1.getValue() == null) || unit1.getValue().equals("Unit"))) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -460,8 +468,10 @@ public class guiController implements Initializable {
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
                 alert.setContentText(comboBox2.getValue() +" cannot be zero");
-                alert.showAndWait();
-                return false;
+                if (!comboBox2.getValue().equals("Temperature")) {
+                    alert.showAndWait();
+                    return false;
+                }
             }
             else if (unit2.isVisible() && ((unit2.getValue() == null) || unit2.getValue().equals("Unit"))) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
