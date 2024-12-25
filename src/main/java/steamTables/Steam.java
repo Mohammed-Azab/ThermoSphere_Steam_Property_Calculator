@@ -56,6 +56,15 @@ public class Steam extends Water{
 
     public void setX(double x) {
         X = x;
+        if (x==0){
+            setSteamPhase(SteamPhase.SaturatedLiquid);
+        }
+        else if (x==1){
+            setSteamPhase(SteamPhase.SaturatedVapour);
+        }
+        else {
+            setSteamPhase(SteamPhase.SaturatedMixture);
+        }
     }
     public double getX() {
         return X;
@@ -65,7 +74,9 @@ public class Steam extends Water{
     }
     public void setSteamPhase(SteamPhase steamPhase) {
         this.steamPhase = steamPhase;
-        X=steamPhase.getX();
+        if (steamPhase!=SteamPhase.SaturatedMixture) {
+            X=steamPhase.getX();
+        }
     }
 
     @Override
