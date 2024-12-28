@@ -68,20 +68,19 @@ public class guiController implements Initializable {
             if (!comboBox3.isVisible()) {
                 unit1.setVisible(true);
             }
-            if (newValue != null && !comboBox3.isVisible()){
-                if(newValue.equals("Phase") || newValue.equals("Quality")){
+            if (newValue != null && !comboBox3.isVisible()) {
+                if (newValue.equals("Phase") || newValue.equals("Quality")) {
                     unit1.setVisible(false);
-                }
-                else {
+                } else {
                     updateUnitsOptions(unit1, newValue);
                 }
             }
-            if (updateComboBoxOptions(comboBox2, newValue)){
+            if (updateComboBoxOptions(comboBox2, newValue)) {
                 unit2.getItems().clear();
                 unit2.setValue(null);
                 unit2.setPromptText("Unit");
             }
-            if(newValue != null) {
+            if (newValue != null) {
                 comboBox11.setVisible(newValue.equals("Phase"));
             }
         });
@@ -90,22 +89,21 @@ public class guiController implements Initializable {
             if (!comboBox3.isVisible()) {
                 unit2.setVisible(true);
             }
-            if (newValue != null && !comboBox3.isVisible()){
-                if(newValue.equals("Phase") || newValue.equals("Quality")){
+            if (newValue != null && !comboBox3.isVisible()) {
+                if (newValue.equals("Phase") || newValue.equals("Quality")) {
                     unit2.setVisible(false);
-                }
-                else {
+                } else {
                     updateUnitsOptions(unit2, newValue);
                 }
             }
             if (newValue != null) {
-                if (updateComboBoxOptions(comboBox1, newValue)){
+                if (updateComboBoxOptions(comboBox1, newValue)) {
                     unit1.getItems().clear();
                     unit1.setValue(null);
                     unit1.setPromptText("Unit");
                 }
             }
-            if(newValue != null) {
+            if (newValue != null) {
                 comboBox22.setVisible(newValue.equals("Phase"));
             }
         });
@@ -127,7 +125,7 @@ public class guiController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("Please enter two more Qualities");
                     alert.showAndWait();
-                    updateAccordingCompOrSuperHeated("Compressed Liquid");
+                    updateAccordingCompOrSuperHeated(SteamPhase.getPhase("Compressed Liquid"));
                 }
                 else if (newValue.equals("SuperHeated Water")) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -135,7 +133,7 @@ public class guiController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("Please enter two more Qualities");
                     alert.showAndWait();
-                    updateAccordingCompOrSuperHeated("SuperHeated Water");
+                    updateAccordingCompOrSuperHeated(SteamPhase.getPhase("Superheated Water"));
                 }
             }
         });
@@ -158,7 +156,7 @@ public class guiController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("Please enter two more Qualities");
                     alert.showAndWait();
-                    updateAccordingCompOrSuperHeated("Compressed Liquid");
+                    updateAccordingCompOrSuperHeated(SteamPhase.getPhase("Compressed Liquid"));
                 }
                 else if (newValue.equals("SuperHeated Water")) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -166,7 +164,7 @@ public class guiController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("Please enter two more Qualities");
                     alert.showAndWait();
-                    updateAccordingCompOrSuperHeated("SuperHeated Water");
+                    updateAccordingCompOrSuperHeated(SteamPhase.getPhase("Superheated Water"));
                 }
             }
 
@@ -242,7 +240,7 @@ public class guiController implements Initializable {
         return !comboBox.getItems().contains(currentOption);
     }
 
-    private void updateAccordingCompOrSuperHeated(String state) {
+    private void updateAccordingCompOrSuperHeated(SteamPhase state) {
         comboBox3.setVisible(true); // needs to be before the Listener
         comboBox1.setValue("Pressure MPa");
         comboBox2.setValue("Temperature C");
@@ -254,7 +252,7 @@ public class guiController implements Initializable {
         comboBox22.setVisible(false);
         unit1.setVisible(false);
         unit2.setVisible(false);
-        comboBox3.setValue(state);
+        comboBox3.setValue(state.toString());
         nOfQ.setText("3");
         resetButton.setVisible(true);
     }
@@ -463,7 +461,6 @@ public class guiController implements Initializable {
             if (chosenQ1.equals("Pressure MPa")) {
                 SteamPhase steamPhase = SteamPhase.getPhase(comboBox3.getValue());
                 if (chosenQ2.equals("Temperature C")) {
-                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,1,steamPhase);
                 }
                 else if (chosenQ2.equals("Volume m3/kg")) {
@@ -480,7 +477,6 @@ public class guiController implements Initializable {
                 }
             }
             else if (chosenQ1.equals("Temperature C")) {
-                v1 = unit2.getValue().equals("Celsius")? v1 : v1-273;
                 SteamPhase steamPhase = SteamPhase.getPhase(comboBox3.getValue());
                 if (chosenQ2.equals("Pressure MPa")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,1,0,steamPhase);
@@ -504,7 +500,6 @@ public class guiController implements Initializable {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,2,0,steamPhase);
                 }
                 else if (chosenQ2.equals("Temperature C")) {
-                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,2,1,steamPhase);
                 }
                 else if (chosenQ2.equals("Internal Energy kJ/kg")) {
@@ -523,7 +518,6 @@ public class guiController implements Initializable {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,3,0,steamPhase);
                 }
                 else if (chosenQ2.equals("Temperature C")) {
-                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,3,1,steamPhase);
                 }
                 else if (chosenQ2.equals("Volume m3/kg")) {
@@ -542,7 +536,6 @@ public class guiController implements Initializable {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,4,0,steamPhase);
                 }
                 else if (chosenQ2.equals("Temperature C")) {
-                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,4,1,steamPhase);
                 }
                 else if (chosenQ2.equals("Volume m3/kg")) {
@@ -561,7 +554,6 @@ public class guiController implements Initializable {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,5,0,steamPhase);
                 }
                 else if (chosenQ2.equals("Temperature C")) {
-                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,5,1,steamPhase);
                 }
                 else if (chosenQ2.equals("Volume m3/kg")) {
