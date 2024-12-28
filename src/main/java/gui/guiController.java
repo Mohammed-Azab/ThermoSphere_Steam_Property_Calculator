@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import steamTables.Controller;
 import steamTables.Steam;
@@ -50,6 +51,21 @@ public class guiController implements Initializable {
         comboBox11.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
         comboBox22.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
 
+        tF1.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                tF2.requestFocus();
+            }
+        });
+
+        tF2.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                findButton.requestFocus();
+            }
+        });
+
+        findButton.setOnAction(event -> {
+            findAll();
+        });
 
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
             unit1.setPromptText("Unit");
@@ -222,13 +238,12 @@ public class guiController implements Initializable {
             } else if ("Entropy kJ/kg \u0001 k".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg"));
             }
+            return !comboBox.getItems().contains(currentOption);
         } catch (StackOverflowError e) {
             resetALl();
             System.err.println("Stack Overflow Error");
         }
-        finally {
-            return !comboBox.getItems().contains(currentOption);
-        }
+        return !comboBox.getItems().contains(currentOption);
     }
 
     private void updateAccordingCompOrSuperHeated(String state) {
@@ -249,6 +264,10 @@ public class guiController implements Initializable {
     }
 
     public void find(MouseEvent mouseEvent) {
+        findAll();
+    }
+
+    private void findAll() {
         String chosenQ1 = (String) comboBox1.getSelectionModel().getSelectedItem();
         String chosenQ2 = (String) comboBox2.getSelectionModel().getSelectedItem();
         if (chosenQ1 == null  || chosenQ2 == null) {
