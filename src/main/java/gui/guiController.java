@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import steamTables.Controller;
 import steamTables.Steam;
+import steamTables.SteamPhase;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -41,8 +42,8 @@ public class guiController implements Initializable {
         type.setVisible(false);
         labelType.setVisible(false);
         controller = new Controller();
-        comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
-        comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality","Phase"));
+        comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
+        comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality","Phase"));
         comboBox11.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
         comboBox22.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
 
@@ -157,6 +158,10 @@ public class guiController implements Initializable {
                 unit.setItems(FXCollections.observableArrayList("kJ/kg · K"));
                 unit.setValue("kJ/kg · K");
             }
+            else if (newValue.equals("Internal Energy")) {
+                unit.setItems(FXCollections.observableArrayList("kJ/kg"));
+                unit.setValue("kJ/kg");
+            }
         }
 
     }
@@ -164,9 +169,9 @@ public class guiController implements Initializable {
     private boolean updateComboBoxOptions(ComboBox<String> comboBox, String selectedOption) {
         String currentOption = comboBox.getValue();
         if ("Temperature".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
+            comboBox.setItems(FXCollections.observableArrayList("Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
         } else if ("Pressure".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
         } else if ("Volume".equals(selectedOption)) {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
         }
@@ -177,10 +182,10 @@ public class guiController implements Initializable {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure" , "Quality", "Phase"));
         }
         else if ("Quality".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy"));
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
         }
         else if ("Phase".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy"));
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
         }
         return !comboBox.getItems().contains(currentOption);
     }
@@ -240,6 +245,9 @@ public class guiController implements Initializable {
                 } else if (chosenQ2.equals("Entropy")) {
                     steam = controller.findTheSteamUsingTS(v1, v2);
                 }
+                else if (chosenQ2.equals("Phase")) {
+                    steam = controller.findTheSteamUsingTPhase(v1,SteamPhase.getPhase(comboBox22.getValue()));
+                }
             }
             if (chosenQ1.equals("Pressure")) {
                 if (chosenQ2.equals("Temperature")) {
@@ -257,6 +265,9 @@ public class guiController implements Initializable {
                 } else if (chosenQ2.equals("Entropy")) {
                     steam = controller.findTheSteamUsingPS(v1, v2);
                 }
+                else if (chosenQ2.equals("Phase")) {
+                    steam = controller.findTheSteamUsingPPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
+                }
             }
             if (chosenQ1.equals("Entropy")) {
                 if (chosenQ2.equals("Temperature")) {
@@ -270,6 +281,9 @@ public class guiController implements Initializable {
                     }
                     steam = controller.findTheSteamUsingXS(v2, v1);
                 }
+                else if (chosenQ2.equals("Phase")) {
+                    steam = controller.findTheSteamUsingSPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
+                }
             }
             if (chosenQ1.equals("Enthalpy")) {
                 if (chosenQ2.equals("Temperature")) {
@@ -282,6 +296,9 @@ public class guiController implements Initializable {
                         return;
                     }
                     steam = controller.findTheSteamUsingHX(v1, v2);
+                }
+                else if (chosenQ2.equals("Phase")) {
+                    steam = controller.findTheSteamUsingHPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
                 }
             }
             if (chosenQ1.equals("Quality")) {
@@ -313,6 +330,9 @@ public class guiController implements Initializable {
                     }
                     steam = controller.findTheSteamUsingVX(v1, v2);
                 }
+                else if (chosenQ2.equals("Phase")) {
+                    steam = controller.findTheSteamUsingVPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
+                }
             }
             if (chosenQ1.equals("Phase")) {
                 String phase = "";
@@ -323,22 +343,18 @@ public class guiController implements Initializable {
                 } else {
                     throw new IllegalArgumentException("Phase is not visible");
                 }
-                if (phase.equals("Saturated Liquid")) {
-                    v1 = 0.0;
-                } else if (phase.equals("Saturated Vapour")) {
-                    v1 = 1.0;
-                }
+                SteamPhase steamPhase = SteamPhase.getPhase(phase);
                 if (chosenQ2.equals("Temperature")) {
                     v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
-                    steam = controller.findTheSteamUsingTX(v2, v1);
+                    steam = controller.findTheSteamUsingTPhase(v2, steamPhase);
                 } else if (chosenQ2.equals("Pressure")) {
-                    steam = controller.findTheSteamUsingPX(v2, v1);
+                    steam = controller.findTheSteamUsingPPhase(v2, steamPhase);
                 } else if (chosenQ2.equals("Volume")) {
-                    steam = controller.findTheSteamUsingVX(v2, v1);
+                    steam = controller.findTheSteamUsingVPhase(v2, steamPhase);
                 } else if (chosenQ2.equals("Enthalpy")) {
-                    steam = controller.findTheSteamUsingHX(v2, v1);
+                    steam = controller.findTheSteamUsingHPhase(v2, steamPhase);
                 } else if (chosenQ2.equals("Entropy")) {
-                    steam = controller.findTheSteamUsingSX(v2, v1); //x must be 1 or 0 or 3 element required
+                    steam = controller.findTheSteamUsingSPhase(v2, steamPhase); //x must be 1 or 0 or 3 element required
                 }
             }
         }
@@ -367,6 +383,8 @@ public class guiController implements Initializable {
 
 
     }
+
+
 
     private void showResults(Steam steam) {
         LP.setText(""+steam.getP()/1000);
