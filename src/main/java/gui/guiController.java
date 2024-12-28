@@ -187,6 +187,9 @@ public class guiController implements Initializable {
         else if ("Phase".equals(selectedOption)) {
             comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
         }
+        else if ("Internal Energy".equals(selectedOption)) {
+            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Quality", "Phase"));
+        }
         return !comboBox.getItems().contains(currentOption);
     }
 
@@ -240,7 +243,10 @@ public class guiController implements Initializable {
                     steam = controller.findTheSteamUsingTX(v1, v2);
                 } else if (chosenQ2.equals("Volume")) {
                     steam = controller.findTheSteamUsingTV(v1, v2);
-                } else if (chosenQ2.equals("Enthalpy")) {
+                }else if (chosenQ2.equals("Internal Energy")) {
+                    steam = controller.findTheSteamUsingTU(v1,v2 );
+                }
+                else if (chosenQ2.equals("Enthalpy")) {
                     steam = controller.findTheSteamUsingTH(v1, v2);
                 } else if (chosenQ2.equals("Entropy")) {
                     steam = controller.findTheSteamUsingTS(v1, v2);
@@ -267,6 +273,9 @@ public class guiController implements Initializable {
                 }
                 else if (chosenQ2.equals("Phase")) {
                     steam = controller.findTheSteamUsingPPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
+                }
+                else if (chosenQ2.equals("Internal Energy")) {
+                    steam = controller.findTheSteamUsingPU(v1,v2 );
                 }
             }
             if (chosenQ1.equals("Entropy")) {
@@ -310,7 +319,10 @@ public class guiController implements Initializable {
                     steam = controller.findTheSteamUsingTX(v2, v1);
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPX(v2, v1);
-                } else if (chosenQ2.equals("Volume")) {
+                }else if (chosenQ2.equals("Internal Energy")) {
+                    steam = controller.findTheSteamUsingUX(v2,v1 );
+                }
+                else if (chosenQ2.equals("Volume")) {
                     steam = controller.findTheSteamUsingVX(v2, v1);
                 } else if (chosenQ2.equals("Enthalpy")) {
                     steam = controller.findTheSteamUsingHX(v2, v1);
@@ -324,6 +336,8 @@ public class guiController implements Initializable {
                     steam = controller.findTheSteamUsingTV(v2, v1);
                 } else if (chosenQ2.equals("Pressure")) {
                     steam = controller.findTheSteamUsingPV(v2, v1);
+                }else if (chosenQ2.equals("Internal Energy")) {
+                    steam = controller.findTheSteamUsingUV(v2,v1);
                 } else if (chosenQ2.equals("Quality")) {
                     if (checkQualityValue(v2)) {
                         return;
@@ -357,6 +371,30 @@ public class guiController implements Initializable {
                     steam = controller.findTheSteamUsingSPhase(v2, steamPhase); //x must be 1 or 0 or 3 element required
                 }
             }
+            if (chosenQ1.equals("Internal Energy")) {
+                if (chosenQ2.equals("Temperature")) {
+                    v2 = unit2.getValue().equals("Celsius")? v2 : v2-273;
+                    steam = controller.findTheSteamUsingTU(v2, v1);
+                }
+                else if (chosenQ2.equals("Pressure")) {
+                    steam = controller.findTheSteamUsingPU(v2, v1);
+                }
+                else if (chosenQ2.equals("Quality")) {
+                    if (checkQualityValue(v2)) {
+                        return;
+                    }
+                    steam = controller.findTheSteamUsingUX(v1, v2);
+                } else if (chosenQ2.equals("Volume")) {
+                    steam = controller.findTheSteamUsingUV(v1, v2);
+                } else if (chosenQ2.equals("Enthalpy")) {
+                    steam = controller.findTheSteamUsingUH(v1, v2);
+                } else if (chosenQ2.equals("Entropy")) {
+                    steam = controller.findTheSteamUsingUS(v1, v2);
+                }
+                else if (chosenQ2.equals("Phase")) {
+                    steam = controller.findTheSteamUsingUPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
+                }
+            }
         }
         catch (NotDefinedException nde) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -366,7 +404,6 @@ public class guiController implements Initializable {
             alert.showAndWait();
             return;
         }
-
 
         if (steam == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -378,13 +415,7 @@ public class guiController implements Initializable {
         }
         showResults(steam);
 
-
-
-
-
     }
-
-
 
     private void showResults(Steam steam) {
         LP.setText(""+steam.getP()/1000);

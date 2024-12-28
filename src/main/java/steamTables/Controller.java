@@ -514,7 +514,7 @@ public class Controller {
     }
 
     // Find Steam Using Pressure and Internal Energy
-    public Steam findTheSteamUsingPU(double P, double u) {
+    public Steam findTheSteamUsingPU(double P, double u) { // tested and working 100%
         Steam steam = new Steam();
         steam.setP(P);
         steam.setU(u);
@@ -532,59 +532,64 @@ public class Controller {
                 row=i;
                 break;
             }
-            if (saturated[i][0] < P && saturated[i][0] > P) { // interpolation
+            if (i!= saturated.length-1 && saturated[i][0] < P && saturated[i + 1][0] > P) { // interpolation
+                found = true;
+                System.out.println("Entered interpolation");
+                double t1 = saturated[i][1], t2 = saturated[i + 1][1];
+                double v1 = saturated[i][2], v2 = saturated[i + 1][2];
+                double u1 = saturated[i][4], u2 = saturated[i + 1][4];
+                double h1 = saturated[i][7], h2 = saturated[i + 1][7];
+                double s1 = saturated[i][10], s2 = saturated[i + 1][10];
 
-            }
-            if (saturated[i][10] == u) {
-                found =true;
-                row=i;
-                g=true;
-                break;
-            }
-            if (saturated[i][12] == u) {
-                found =true;
-                row=i;
-                f=true;
-                break;
-            }
-            if (saturated[i][10] < u && saturated[i][12] > u) {
-                found =true;
-                row=i;
-                m=true;
-                break;
-            }
-            if (saturated[i][10] > u) {
-                found =true;
-                row=i;
-                compressed=true;
-                break;
-            }
-            if (saturated[i][12] < u) {
-                found =true;
-                row=i;
-                compressed=true;
-                break;
+                double interpolatedT = Interpolation.linear(saturated[i][0], t1, saturated[i + 1][0], t2, P);
+                double interpolatedV = Interpolation.linear(saturated[i][0], v1, saturated[i + 1][0], v2, P);
+                double interpolatedU = Interpolation.linear(saturated[i][0], u1, saturated[i + 1][0], u2, P);
+                double interpolatedH = Interpolation.linear(saturated[i][0], h1, saturated[i + 1][0], h2, P);
+                double interpolatedS = Interpolation.linear(saturated[i][0], s1, saturated[i + 1][0], s2, P);
+
+                steam.setT(interpolatedT);
+                steam.setV(interpolatedV);
+                steam.setU(interpolatedU);
+                steam.setH(interpolatedH);
+                steam.setS(interpolatedS);
+                steam.setSteamPhase(SteamPhase.SaturatedMixture);
+                return steam;
             }
         }
         if (!found) {
             throw new NotDefinedException();
         }
+        if (saturated[row][4] == u) {
+            f=true;
+        }
+        if (saturated[row][6] == u) {
+            g=true;
+        }
+        if (saturated[row][4] < u && saturated[row][6] > u) {
+            m=true;
+        }
+        if (saturated[row][6] < u) {
+            superHeated=true;
+        }
+        if (saturated[row][4] > u) {
+            compressed=true;
+        }
         steam.setT(saturated[row][1]);
-        if (g){
-            steam.setSteamPhase(SteamPhase.SaturatedVapour);
-            steam.setX(1);
+        if (f){
+            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
             steam.setV(saturated[row][2]);
             steam.setU(saturated[row][4]);
             steam.setH(saturated[row][7]);
             steam.setS(saturated[row][10]);
+            return steam;
         }
-        else if (f){
-            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
-            steam.setX(0);
+        else if (g){
+            steam.setSteamPhase(SteamPhase.SaturatedVapour);
             steam.setV(saturated[row][3]);
             steam.setU(saturated[row][6]);
             steam.setH(saturated[row][9]);
             steam.setS(saturated[row][12]);
+            return steam;
         }
         else if (m){
             double X = (u-saturated[row][4])/saturated[row][5] ; //u = uf + X * ufg
@@ -611,7 +616,7 @@ public class Controller {
                         steam.setS(table[i][5]);
                         return steam;
                     }
-                    if (table[i][3] < u && table[i + 1][3] > u) { // interpolation
+                    if (i!= table.length-1 &&table[i][3] < u && table[i + 1][3] > u) { // interpolation
                         double interpolatedT = Interpolation.linear(table[i][3], table[i][1], table[i + 1][3], table[i + 1][1], u);
                         double interpolatedV = Interpolation.linear(table[i][3], table[i][2], table[i + 1][3], table[i + 1][2], u);
                         double interpolatedH = Interpolation.linear(table[i][3], table[i][4], table[i + 1][3], table[i + 1][4], u);
@@ -625,6 +630,7 @@ public class Controller {
                     }
                 }
             }
+            throw new NotDefinedException();
         }
         else if (compressed){
             steam.setSteamPhase(SteamPhase.CompressedLiquid);
@@ -632,6 +638,7 @@ public class Controller {
             saturated = db.getSaturatedTableT();
             P/=1000;
             if (P<5){ // using saturated Tables
+                steam.setT(T);
                 for (int i =0 ;i<saturated.length;i++){
                     if (T == saturated[i][0]) {
                         steam.setT(saturated[i][0]);
@@ -642,7 +649,28 @@ public class Controller {
                         steam.setS(saturated[i][10]);
                         return steam;
                     }
+
+                    if (i!= saturated.length-1 && saturated[i][0] < T && saturated[i + 1][0] > T) { // interpolation
+                        double p1 = saturated[i][1], p2 = saturated[i + 1][1];
+                        double v1 = saturated[i][2], v2 = saturated[i + 1][2];
+                        double u1 = saturated[i][4], u2 = saturated[i + 1][4];
+                        double h1 = saturated[i][7], h2 = saturated[i + 1][7];
+                        double s1 = saturated[i][10], s2 = saturated[i + 1][10];
+                        double interpolatedP = Interpolation.linear(saturated[i][0], p1, saturated[i + 1][0], p2, T);
+                        double interpolatedV = Interpolation.linear(saturated[i][0], v1, saturated[i + 1][0], v2, T);
+                        double interpolatedU = Interpolation.linear(saturated[i][0], u1, saturated[i + 1][0], u2, T);
+                        double interpolatedH = Interpolation.linear(saturated[i][0], h1, saturated[i + 1][0], h2, T);
+                        double interpolatedS = Interpolation.linear(saturated[i][0], s1, saturated[i + 1][0], s2, T);
+                        steam.setP(interpolatedP);
+                        steam.setV(interpolatedV);
+                        steam.setU(interpolatedU);
+                        steam.setH(interpolatedH);
+                        steam.setS(interpolatedS);
+                        return steam;
+                    }
+
                 }
+                throw new NotDefinedException();
             }
             double [][] table = db.getCompressedLiquidTable();
             for (int i = 0; i < table.length; i++) {
@@ -654,7 +682,7 @@ public class Controller {
                         steam.setS(table[i][5]);
                         return steam;
                     }
-                    if (table[i][3] < u && table[i + 1][3] > u) { // interpolation
+                    if (i!= table.length-1 &&table[i][3] < u && table[i + 1][3] > u) { // interpolation
                         double interpolatedT = Interpolation.linear(table[i][3], table[i][1], table[i + 1][3], table[i + 1][1], u);
                         double interpolatedV = Interpolation.linear(table[i][3], table[i][2], table[i + 1][3], table[i + 1][2], u);
                         double interpolatedH = Interpolation.linear(table[i][3], table[i][4], table[i + 1][3], table[i + 1][4], u);
@@ -1118,12 +1146,8 @@ public class Controller {
         return steam;
     }
 
-    public Steam findTheSteamUsingHState(double H, SteamPhase phase) {
-        return findTheSteamUsingHX(H, phase.getX());
-
-    }
-    public Steam findTheSteamUsingUState(double U, SteamPhase phase) {
-        return findTheSteamUsingUX(phase.getX(), U);
+    public Steam findTheSteamUsingUPhase(double U, SteamPhase phase) {
+        return new Steam();
     }
 
 
@@ -1135,7 +1159,6 @@ public class Controller {
         Steam steam = new Steam();
         return steam;
     }
-
 
     public Steam findTheSteamUsingVX(double v, double X) { // need to be Tested .... nicht mix
         Steam steam = new Steam();
@@ -1220,6 +1243,20 @@ public class Controller {
 
     public DataBase getDb() {
         return db;
+    }
+
+    public Steam findTheSteamUsingUS(double u, double s) {
+        Steam steam = new Steam();
+        steam.setU(u);
+        steam.setS(s);
+        return steam;
+    }
+
+    public Steam findTheSteamUsingUH(double u, double h) {
+        Steam steam = new Steam();
+        steam.setH(h);
+        steam.setU(u);
+        return steam;
     }
 }
 
