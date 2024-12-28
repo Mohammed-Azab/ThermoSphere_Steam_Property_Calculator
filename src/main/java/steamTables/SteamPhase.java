@@ -22,4 +22,24 @@ public enum SteamPhase {
     public double getX() {
         return this.ordinal();
     }
+
+    public static SteamPhase getPhase(String value) {
+        if (value.equals("Saturated Liquid")) {
+            return SteamPhase.SaturatedLiquid;
+        }
+        if (value.equals("Saturated Vapour")) {
+            return SteamPhase.SaturatedVapour;
+        }
+        if (value.equals("Saturated Mixture")) {
+            return SteamPhase.SaturatedMixture;
+        }
+        if (value.equals("Superheated Water")) {
+            return SteamPhase.SuperHeatedWater;
+        }
+        if (value.equals("Saturated")) {
+            return SteamPhase.Saturated;
+        }
+
+        return SteamPhase.CompressedLiquid;
+    }
 }
