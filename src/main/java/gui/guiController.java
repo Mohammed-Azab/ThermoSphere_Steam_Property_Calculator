@@ -1,6 +1,7 @@
 package gui;
 
 import Exceptions.NotDefinedException;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -22,8 +23,10 @@ public class guiController implements Initializable {
     public ImageView general1;
 
     public Label type, labelType;
-    public TextField tF1, tF2, tF3;
+    public TextField tF1, tF2;
     public Button findButton;
+    public Button resetButton;
+    public Label nOfQ;
 
     private Controller controller;
 
@@ -53,7 +56,7 @@ public class guiController implements Initializable {
             if (!comboBox3.isVisible()) {
                 unit1.setVisible(true);
             }
-            if (newValue != null){
+            if (newValue != null && !comboBox3.isVisible()){
                 if(newValue.equals("Phase") || newValue.equals("Quality")){
                     unit1.setVisible(false);
                 }
@@ -72,8 +75,10 @@ public class guiController implements Initializable {
         });
         comboBox2.valueProperty().addListener((observable, oldValue, newValue) -> {
             unit2.setPromptText("Unit");
-            unit2.setVisible(true);
-            if (newValue != null){
+            if (!comboBox3.isVisible()) {
+                unit2.setVisible(true);
+            }
+            if (newValue != null && !comboBox3.isVisible()){
                 if(newValue.equals("Phase") || newValue.equals("Quality")){
                     unit2.setVisible(false);
                 }
@@ -96,14 +101,12 @@ public class guiController implements Initializable {
         comboBox11.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.equals("Saturated Mixture")) {
-                    comboBox11.setValue("Choose The Phase");
-                    comboBox22.setVisible(false);
-                    comboBox11.setVisible(false);
                     comboBox1.setValue("Quality");
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information");
                     alert.setHeaderText(null);
                     alert.setContentText("Please enter the Quality value for the Saturated Mixture");
+                    System.out.println("All is okay");
                     alert.showAndWait();
                 }
                 else if (newValue.equals("Compressed Liquid")) {
@@ -128,7 +131,6 @@ public class guiController implements Initializable {
         comboBox22.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.equals("Saturated Mixture")) {
-                    comboBox22.setValue("Choose The Phase");
                     comboBox22.setVisible(false);
                     comboBox11.setVisible(false);
                     comboBox2.setValue("Quality");
@@ -138,18 +140,30 @@ public class guiController implements Initializable {
                     alert.setContentText("Please enter the Quality value for the Saturated Mixture");
                     alert.showAndWait();
                 }
+                else if (newValue.equals("Compressed Liquid")) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter two more Qualities");
+                    alert.showAndWait();
+                    updateAccordingCompOrSuperHeated("Compressed Liquid");
+                }
+                else if (newValue.equals("SuperHeated Water")) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter two more Qualities");
+                    alert.showAndWait();
+                    updateAccordingCompOrSuperHeated("SuperHeated Water");
+                }
             }
 
         });
 
     }
 
-    private void updateAccordingSuperHeated() {
-
-    }
-
     private void updateUnitsOptions(ComboBox<String> unit, String newValue) {
-        if (newValue != null) {
+        if (newValue != null && unit.isVisible() && unit != null) {
             if (newValue.equals("Temperature")) {
                 unit.setItems(FXCollections.observableArrayList("Kelvin", "Celsius"));
                 unit.setValue("Celsius");
@@ -180,54 +194,58 @@ public class guiController implements Initializable {
 
     private boolean updateComboBoxOptions(ComboBox<String> comboBox, String selectedOption) {
         String currentOption = comboBox.getValue();
-        if ("Temperature".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
-        } else if ("Pressure".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
-        } else if ("Volume".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
+        try {
+            if ("Temperature".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
+            } else if ("Pressure".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
+            } else if ("Volume".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Quality", "Phase"));
+            } else if ("Enthalpy".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
+            } else if ("Entropy".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
+            } else if ("Quality".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
+            } else if ("Phase".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
+            } else if ("Internal Energy".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Quality", "Phase"));
+            } else if ("Pressure MPa".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Temperature C", "Internal Energy kJ/kg", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
+            } else if ("Temperature C".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
+            } else if ("Internal Energy kJ/kg".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
+            } else if ("Enthalpy kJ/kg".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Entropy kJ/kg \u0001 k"));
+            } else if ("Entropy kJ/kg \u0001 k".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg"));
+            }
+        } catch (StackOverflowError e) {
+            resetALl();
+            System.err.println("Stack Overflow Error");
         }
-        else if ("Enthalpy".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
+        finally {
+            return !comboBox.getItems().contains(currentOption);
         }
-        else if ("Entropy".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure" , "Quality", "Phase"));
-        }
-        else if ("Quality".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
-        }
-        else if ("Phase".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
-        }
-        else if ("Internal Energy".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Quality", "Phase"));
-        }
-        else if ("Pressure MPa".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Temperature C", "Internal Energy kJ/kg", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
-        }
-        else if ("Temperature C".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
-        }
-        else if ("Internal Energy kJ/kg".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
-        }
-        else if ("Enthalpy kJ/kg".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Entropy kJ/kg \u0001 k"));
-        }
-        else if ("Entropy kJ/kg \u0001 k".equals(selectedOption)) {
-            comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg","Internal Energy kJ/kg", "Enthalpy kJ/kg"));
-        }
-        return !comboBox.getItems().contains(currentOption);
     }
 
     private void updateAccordingCompOrSuperHeated(String state) {
-        comboBox1.setItems(FXCollections.observableArrayList("Pressure MPa"));
-        comboBox2.setValue("Temperature C ");
+        comboBox3.setVisible(true); // needs to be before the Listener
+        comboBox1.setValue("Pressure MPa");
+        comboBox2.setValue("Temperature C");
+        comboBox1.setValue(null);
+        comboBox2.setValue(null);
+        tF1.clear();
+        tF2.clear();
+        comboBox11.setVisible(false);
+        comboBox22.setVisible(false);
         unit1.setVisible(false);
         unit2.setVisible(false);
-        comboBox3.setVisible(true);
-        comboBox3.getSelectionModel().clearSelection();
         comboBox3.setValue(state);
+        nOfQ.setText("3");
+        resetButton.setVisible(true);
     }
 
     public void find(MouseEvent mouseEvent) {
@@ -714,4 +732,20 @@ public class guiController implements Initializable {
         alert.showAndWait();
     }
 
+    public void reset(MouseEvent mouseEvent) { // worked
+        resetALl();
+    }
+
+    private void resetALl() {
+        comboBox3.setVisible(false);
+        unit1.setVisible(true);
+        unit2.setVisible(true);
+        comboBox1.setVisible(true);
+        tF1.clear();
+        tF2.clear();
+        comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
+        comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality","Phase"));
+        resetButton.setVisible(false);
+        nOfQ.setText("2");
+    }
 }

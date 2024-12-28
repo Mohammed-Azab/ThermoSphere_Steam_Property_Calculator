@@ -534,7 +534,6 @@ public class Controller {
             }
             if (i!= saturated.length-1 && saturated[i][0] < P && saturated[i + 1][0] > P) { // interpolation
                 found = true;
-                System.out.println("Entered interpolation");
                 double t1 = saturated[i][1], t2 = saturated[i + 1][1];
                 double v1 = saturated[i][2], v2 = saturated[i + 1][2];
                 double u1 = saturated[i][4], u2 = saturated[i + 1][4];
@@ -1257,6 +1256,20 @@ public class Controller {
         steam.setH(h);
         steam.setU(u);
         return steam;
+    }
+
+    public Steam findTheSuperHeatedSteamOrCompressedLiquid(double x, double y, int i, int j, SteamPhase phase) { // handle Mpa
+        Steam steam = new Steam();
+        steam.setSteamPhase(phase);
+        double [][] table = db.getSuperHeatedTable();
+        if (phase == SteamPhase.CompressedLiquid){
+            table = db.getCompressedLiquidTable();
+        }
+        for (int k=0 ;k<table.length;k++){ //found or interpolation
+
+        }
+        return steam;
+
     }
 }
 
