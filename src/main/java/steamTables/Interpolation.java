@@ -1,5 +1,7 @@
 package steamTables;
 
+import Exceptions.CannotBeInterpolated;
+
 public class Interpolation {
 
     /**
@@ -15,7 +17,7 @@ public class Interpolation {
      */
     public static double linear(double x1, double y1, double x2, double y2, double x) {
         if (x1 == x2) {
-            throw new IllegalArgumentException("x1 and x2 cannot be the same value for interpolation.");
+            throw new CannotBeInterpolated("x1 and x2 cannot be the same value for interpolation.");
         }
         return y1 + (x - x1) * ((y2 - y1) / (x2 - x1));
     }
