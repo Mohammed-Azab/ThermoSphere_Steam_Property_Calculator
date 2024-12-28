@@ -59,12 +59,8 @@ public class guiController implements Initializable {
 
         tF2.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                findButton.requestFocus();
+                findAll();
             }
-        });
-
-        findButton.setOnAction(event -> {
-            findAll();
         });
 
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
