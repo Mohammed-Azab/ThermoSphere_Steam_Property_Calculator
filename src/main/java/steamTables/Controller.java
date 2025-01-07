@@ -466,18 +466,18 @@ public class Controller {
         if (X == 1.0){
             steam.setSteamPhase(SteamPhase.SaturatedVapour);
             steam.setP(saturated[row][1]);
-            steam.setV(saturated[row][2]);
-            steam.setU(saturated[row][4]);
-            steam.setH(saturated[row][7]);
-            steam.setS(saturated[row][10]);
-        }
-        else if (X == 0.0){
-            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
-            steam.setP(saturated[row][1]);
             steam.setV(saturated[row][3]);
             steam.setU(saturated[row][6]);
             steam.setH(saturated[row][9]);
             steam.setS(saturated[row][12]);
+        }
+        else if (X == 0.0){
+            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
+            steam.setP(saturated[row][1]);
+            steam.setV(saturated[row][2]);
+            steam.setU(saturated[row][4]);
+            steam.setH(saturated[row][7]);
+            steam.setS(saturated[row][10]);
         }
         else {
             steam.setSteamPhase(SteamPhase.SaturatedMixture);
