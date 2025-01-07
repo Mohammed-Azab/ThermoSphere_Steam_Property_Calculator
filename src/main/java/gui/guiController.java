@@ -4,15 +4,20 @@ import Exceptions.CannotBeInterpolated;
 import Exceptions.NotDefinedException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import steamTables.Controller;
 import steamTables.Steam;
 import steamTables.SteamPhase;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -262,6 +267,25 @@ public class guiController implements Initializable {
 
     public void find(MouseEvent mouseEvent) {
         findAll();
+    }
+    public void info(MouseEvent mouseEvent) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/Info.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.resizableProperty().setValue(Boolean.FALSE);
+            stage.show();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Something went wrong, please try again");
+            alert.showAndWait();
+        }
     }
 
     private void findAll() {
@@ -617,7 +641,9 @@ public class guiController implements Initializable {
         general.setVisible(true);
         type.setVisible(true);
         labelType.setVisible(true);
-        type.setText(steam.getSteamPhase().toString());
+        String typeOfSteam = steam.getSteamPhase().toString();
+        typeOfSteam = steam.getSteamPhase()== SteamPhase.SaturatedMixture? typeOfSteam+", X = "+steam.getX():typeOfSteam ;
+        type.setText(typeOfSteam);
 
     }
 
@@ -720,7 +746,7 @@ public class guiController implements Initializable {
     }
 
 
-    public boolean checkIfNumeric(String input, String quantity) {
+    private boolean checkIfNumeric(String input, String quantity) {
         if (input.charAt(0) == '0' && input.length() > 1 && input.charAt(1) != '.') {
             showAlert("Leading zeros are not allowed.");
             return false;
