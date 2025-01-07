@@ -600,7 +600,7 @@ public class Controller {
         Steam steam = new Steam();
         steam.setT(T);
         steam.setSteamPhase(phase);
-        return steam;
+        return findTheSteamUsingTX(T,phase.getX());
     }
 
     // Find Steam Using Pressure and Volume
