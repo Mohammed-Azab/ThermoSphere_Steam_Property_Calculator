@@ -15,7 +15,7 @@ public class Controller {
     }
 
     // Find Steam Using Temperature and Pressure
-    public Steam findTheSteamUsingTP(double T, double P) {
+    public Steam findTheSteamUsingTP(double T, double P) { // all working
         Steam steam = new Steam();
         steam.setT(T);
         steam.setP(P);
@@ -139,25 +139,27 @@ public class Controller {
     }
 
     // Find Steam Using Temperature and Volume
-    public Steam findTheSteamUsingTV(double T, double v) { // not completed
+    public Steam findTheSteamUsingTV(double T, double v) { // it's working
         Steam steam = new Steam();
         steam.setT(T);
         steam.setV(v);
-        if (T >= steam.getCriticalTemperature()) { // superheated
+        if (T >= steam.getCriticalTemperature() || T > 373.95) { // superheated
             steam.setSteamPhase(SteamPhase.SuperHeatedWater);
-            steam.setX(1);
             double [][] SuperH = db.getSuperHeatedTable();
             boolean found = false;
             for (int i = 0; i < SuperH.length; i++) {
-                if (SuperH[i][1] == T) {
+                if (SuperH[i][1] == T && SuperH[i][2] == v) {
                     found =true;
-                    steam.setSteamPhase(SteamPhase.SuperHeatedWater);
+                    steam.setSteamPhase(SteamPhase.SuperHeatedWater);te
                     steam.setP(SuperH[i][0]);
                     steam.setU(SuperH[i][2]);
                     steam.setH(SuperH[i][3]);
                     steam.setS(SuperH[i][4]);
                     return steam;
                 }
+            }
+            if (!found) {
+                return interpolatedSuperHeatedOrCompressed(T,v,"T","V",SuperH);
             }
         }
         else {
@@ -166,10 +168,12 @@ public class Controller {
             boolean f = false;
             boolean g = false;
             int row = 0;
+            double vf =0;
             for (int i = 0; i < saturated.length; i++) {
                 if ( saturated[i][0] == T ) {
                     found =true;
                     row=i;
+                    vf =saturated[i][2];
                     break;
                 }
                 if (saturated[i][10] == v) {
@@ -186,7 +190,7 @@ public class Controller {
                 }
             }
             if (!found) {
-                throw new NotDefinedException();
+                return interpolatedSatT(T, v, "T", "V", saturated);
             }
             steam.setP(saturated[row][1]);
             if (g){
@@ -205,7 +209,7 @@ public class Controller {
                 steam.setH(saturated[row][9]);
                 steam.setS(saturated[row][12]);
             }
-            else {
+            else if (saturated[row][2] < v && (saturated[row][3] > v)) {
                 double X = (v-saturated[row][2])/(saturated[row][3]-saturated[row][2]); //u = uf + X * ufg
                 steam.setX(X);
                 steam.setSteamPhase(SteamPhase.SaturatedMixture);
@@ -217,8 +221,25 @@ public class Controller {
                 steam.setH(h);
                 steam.setS(s);
             }
-        }
-
+            else {
+                double [][] table = db.getSuperHeatedTable();
+                steam.setSteamPhase(SteamPhase.SuperHeatedWater);
+                if (vf < v) { //compressed
+                    table = db.getCompressedLiquidTable();
+                    steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                }
+                for (int i = 0; i < table.length; i++) {
+                    if (table[i][1] == T && table[i][2] == v) {
+                        steam.setU(table[i][3]);
+                        steam.setH(table[i][4]);
+                        steam.setS(table[i][5]);
+                        steam.setP(table[i][0]);
+                        return steam;
+                    }
+                }
+                return interpolatedSuperHeatedOrCompressed(T,v,"T","V",table);
+                }
+            }
         return steam;
     }
 
