@@ -1,5 +1,6 @@
 package gui;
 
+import Exceptions.CannotBeInterpolated;
 import Exceptions.NotDefinedException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -573,7 +574,7 @@ public class guiController implements Initializable {
                 }
             }
         }
-        catch (NotDefinedException nde) {
+        catch (NotDefinedException | CannotBeInterpolated nde) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information");
             alert.setHeaderText("Missing or Incomplete Data");
@@ -581,6 +582,10 @@ public class guiController implements Initializable {
             alert.showAndWait();
             return;
         }
+        catch (Exception e) {
+            resetALl();
+        }
+
 
         if (steam == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
