@@ -38,6 +38,8 @@ public class guiController implements Initializable {
     private Controller controller;
 
     private boolean withUnits = false;
+    private boolean isUpdatingComboBox1 = false;
+    private boolean isUpdatingComboBox2 = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -72,47 +74,64 @@ public class guiController implements Initializable {
         });
 
         comboBox1.valueProperty().addListener((observable, oldValue, newValue) -> {
-            unit1.setPromptText("Unit");
-            if (!comboBox3.isVisible()) {
-                unit1.setVisible(true);
+            if (isUpdatingComboBox1) {
+                return; // Avoid triggering if already in update process
             }
-            if (newValue != null && !comboBox3.isVisible()) {
-                if (newValue.equals("Phase") || newValue.equals("Quality")) {
-                    unit1.setVisible(false);
-                } else {
-                    updateUnitsOptions(unit1, newValue);
+            try {
+                isUpdatingComboBox2 = true; // Prevent comboBox2 listener from executing
+
+                if (!comboBox3.isVisible()) {
+                    unit1.setVisible(true);
                 }
-            }
-            if (updateComboBoxOptions(comboBox2, newValue)) {
-                unit2.getItems().clear();
-                unit2.setValue(null);
-                unit2.setPromptText("Unit");
-            }
-            if (newValue != null) {
-                comboBox11.setVisible(newValue.equals("Phase"));
+                if (newValue != null && !comboBox3.isVisible()) {
+                    if (newValue.equals("Phase") || newValue.equals("Quality")) {
+                        unit1.setVisible(false);
+                    } else {
+                        updateUnitsOptions(unit1, newValue);
+                    }
+                }
+                if (updateComboBoxOptions(comboBox2, newValue)) {
+                    unit2.getItems().clear();
+                    unit2.setValue(null);
+                    unit2.setPromptText("Unit");
+                }
+                if (newValue != null) {
+                    comboBox11.setVisible(newValue.equals("Phase"));
+                }
+            } finally {
+                isUpdatingComboBox2 = false; // Re-enable comboBox2 listener
             }
         });
+
         comboBox2.valueProperty().addListener((observable, oldValue, newValue) -> {
-            unit2.setPromptText("Unit");
-            if (!comboBox3.isVisible()) {
-                unit2.setVisible(true);
+            if (isUpdatingComboBox2) {
+                return; // Avoid triggering if already in update process
             }
-            if (newValue != null && !comboBox3.isVisible()) {
-                if (newValue.equals("Phase") || newValue.equals("Quality")) {
-                    unit2.setVisible(false);
-                } else {
-                    updateUnitsOptions(unit2, newValue);
+            try {
+                isUpdatingComboBox1 = true; // Prevent comboBox1 listener from executing
+
+                if (!comboBox3.isVisible()) {
+                    unit2.setVisible(true);
                 }
-            }
-            if (newValue != null) {
-                if (updateComboBoxOptions(comboBox1, newValue)) {
-                    unit1.getItems().clear();
-                    unit1.setValue(null);
-                    unit1.setPromptText("Unit");
+                if (newValue != null && !comboBox3.isVisible()) {
+                    if (newValue.equals("Phase") || newValue.equals("Quality")) {
+                        unit2.setVisible(false);
+                    } else {
+                        updateUnitsOptions(unit2, newValue);
+                    }
                 }
-            }
-            if (newValue != null) {
-                comboBox22.setVisible(newValue.equals("Phase"));
+                if (newValue != null) {
+                    if (updateComboBoxOptions(comboBox1, newValue)) {
+                        unit1.getItems().clear();
+                        unit1.setValue(null);
+                        unit1.setPromptText("Unit");
+                    }
+                }
+                if (newValue != null) {
+                    comboBox22.setVisible(newValue.equals("Phase"));
+                }
+            } finally {
+                isUpdatingComboBox1 = false; // Re-enable comboBox1 listener
             }
         });
 
