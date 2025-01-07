@@ -1375,13 +1375,9 @@ public class Controller {
         return steam;
     }
 
-    public Steam findTheSuperHeatedSteamOrCompressedLiquid(double x, double y, int i, int j, SteamPhase phase) { // handle Mpa
+    public Steam findTheSuperHeatedSteamOrCompressedLiquid(double x, double y, int i, int j, SteamPhase phase) { //all works
         Steam steam = new Steam();
         steam.setSteamPhase(phase);
-        System.out.println(x);
-        System.out.println(y);
-        System.out.println(i);
-        System.out.println(j);
         double [][] table = db.getSuperHeatedTable();
         if (phase == SteamPhase.CompressedLiquid){
             table = db.getCompressedLiquidTable();
@@ -1396,7 +1392,7 @@ public class Controller {
                 }
             }
         }
-        for (int k=0 ;k<table.length;k++) { //found or interpolation
+        for (int k=0 ;k<table.length;k++) { //find before interpolation
             if (table[k][i] == x && table[k][j] == y) {
                 steam.setP(table[k][0]);
                 steam.setT(table[k][1]);

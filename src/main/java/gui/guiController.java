@@ -31,6 +31,8 @@ public class guiController implements Initializable {
 
     private Controller controller;
 
+    private boolean withUnits = false;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tF1.setVisible(true);
@@ -222,14 +224,14 @@ public class guiController implements Initializable {
             } else if ("Internal Energy".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Quality", "Phase"));
             } else if ("Pressure MPa".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature C", "Internal Energy kJ/kg", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature C", "Internal Energy kJ/kg", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg · K"));
             } else if ("Temperature C".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg", "Entropy kJ/kg · K"));
             } else if ("Internal Energy kJ/kg".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg \u0001 k"));
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg · K"));
             } else if ("Enthalpy kJ/kg".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Entropy kJ/kg \u0001 k"));
-            } else if ("Entropy kJ/kg \u0001 k".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Entropy kJ/kg · K"));
+            } else if ("Entropy kJ/kg · K".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg"));
             }
             return !comboBox.getItems().contains(currentOption);
@@ -262,6 +264,7 @@ public class guiController implements Initializable {
     }
 
     private void findAll() {
+        withUnits = false;
         String chosenQ1 = (String) comboBox1.getSelectionModel().getSelectedItem();
         String chosenQ2 = (String) comboBox2.getSelectionModel().getSelectedItem();
         if (chosenQ1 == null  || chosenQ2 == null) {
@@ -286,6 +289,7 @@ public class guiController implements Initializable {
         }
 
         Steam steam = new Steam();
+        withUnits = comboBox3.isVisible();
 
         if (chosenQ1.equals("Pressure")){
             v1 = unit1.getValue().equals("MPa") ? v1 * 1000 : v1;
@@ -461,18 +465,20 @@ public class guiController implements Initializable {
             if (chosenQ1.equals("Pressure MPa")) {
                 SteamPhase steamPhase = SteamPhase.getPhase(comboBox3.getValue());
                 if (chosenQ2.equals("Temperature C")) {
+                    System.out.println("Temperature C");
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,1,steamPhase);
                 }
                 else if (chosenQ2.equals("Volume m3/kg")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,2,steamPhase);
                 }
                 else if (chosenQ2.equals("Internal Energy kJ/kg")) {
+                    System.out.println("Internal Energy kJ/kg");
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,3,steamPhase);
                 }
                 else if (chosenQ2.equals("Enthalpy kJ/kg")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,4,steamPhase);
                 }
-                else if (chosenQ2.equals("Entropy kJ/kg \\u0001 k")) {
+                else if (chosenQ2.equals("Entropy kJ/kg · K")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,5,steamPhase);
                 }
             }
@@ -490,7 +496,7 @@ public class guiController implements Initializable {
                 else if (chosenQ2.equals("Enthalpy kJ/kg")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,1,4,steamPhase);
                 }
-                else if (chosenQ2.equals("Entropy kJ/kg \\u0001 k")) {
+                else if (chosenQ2.equals("Entropy kJ/kg · K")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,1,5,steamPhase);
                 }
             }
@@ -508,7 +514,7 @@ public class guiController implements Initializable {
                 else if (chosenQ2.equals("Enthalpy kJ/kg")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,2,4,steamPhase);
                 }
-                else if (chosenQ2.equals("Entropy kJ/kg \\u0001 k")) {
+                else if (chosenQ2.equals("Entropy kJ/kg · K")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,2,5,steamPhase);
                 }
             }
@@ -526,7 +532,7 @@ public class guiController implements Initializable {
                 else if (chosenQ2.equals("Enthalpy kJ/kg")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,3,4,steamPhase);
                 }
-                else if (chosenQ2.equals("Entropy kJ/kg \\u0001 k")) {
+                else if (chosenQ2.equals("Entropy kJ/kg · K")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,3,5,steamPhase);
                 }
             }
@@ -544,11 +550,11 @@ public class guiController implements Initializable {
                 else if (chosenQ2.equals("Internal Energy kJ/kg")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,4,3,steamPhase);
                 }
-                else if (chosenQ2.equals("Entropy kJ/kg \\u0001 k")) {
+                else if (chosenQ2.equals("Entropy kJ/kg · K")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,4,5,steamPhase);
                 }
             }
-            else if (chosenQ1.equals("Entropy kJ/kg \\u0001 k")) {
+            else if (chosenQ1.equals("Entropy kJ/kg · K")) {
                 SteamPhase steamPhase = SteamPhase.getPhase(comboBox3.getValue());
                 if (chosenQ2.equals("Pressure MPa")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,5,0,steamPhase);
@@ -589,7 +595,8 @@ public class guiController implements Initializable {
     }
 
     private void showResults(Steam steam) {
-        LP.setText(""+steam.getP()/1000);
+        String pressure = withUnits? ""+steam.getP() : ""+steam.getP()/1000;
+        LP.setText(pressure);
         LT.setText(""+steam.getT());
         LV.setText(""+steam.getV());
         LU.setText(""+steam.getU());
