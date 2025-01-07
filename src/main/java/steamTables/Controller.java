@@ -529,6 +529,8 @@ public class Controller {
             double sf=0;
             for (int i = 0; i < saturated.length; i++) {
                 if ( saturated[i][0] == T ) {
+                    System.out.println("foundT");
+                    System.out.println(T);
                     found =true;
                     row=i;
                     sf =saturated[i][10];
@@ -577,10 +579,8 @@ public class Controller {
                 return steam;
             }
             else {
-                System.out.println("Entered");
                 double [][] table = sf < s? db.getSuperHeatedTable(): db.getCompressedLiquidTable();
                 steam.setSteamPhase(sf < s? SteamPhase.SuperHeatedWater: SteamPhase.CompressedLiquid);
-                System.out.println(steam.getSteamPhase());
                 for (int i = 0; i < table.length; i++) {
                     if (table[i][1] == T && table[i][5] == s) {
                         steam.setV(table[i][2]);
@@ -1645,57 +1645,57 @@ public class Controller {
         for (int i = 0; i < saturated.length - 1; i++) {
             if (saturated[i][index1] < v1 && saturated[i + 1][index1] > v1) { // Interpolation
                 double interpolatedP = 0, interpolatedT = 0, interpolatedV = 0, interpolatedU = 0, interpolatedH = 0, interpolatedS = 0;
-                if (!"T".equals(s1) || !"T".equals(s2)) {
+                if (!"T".equals(s1) && !"T".equals(s2)) {
                     interpolatedT = Interpolation.linear(saturated[i][index1], saturated[i][0], saturated[i + 1][index1], saturated[i + 1][0], v1);
                 } else {
                     if ("T".equals(s1)) {
                         interpolatedT = v1;
-                    } else if ("T".equals(s2)) {
+                    } else {
                         interpolatedT = v2;
                     }
                 }
-                if (!"P".equals(s1) || !"P".equals(s2)) {
+                if (!"P".equals(s1) && !"P".equals(s2)) {
                     interpolatedP = Interpolation.linear(saturated[i][index1], saturated[i][1], saturated[i + 1][index1], saturated[i + 1][1], v1);
                 } else {
                     if ("P".equals(s1)) {
                         interpolatedP = v1;
-                    } else if ("P".equals(s2)) {
+                    } else {
                         interpolatedP = v2;
                     }
                 }
-                if (!"V".equals(s1) || !"V".equals(s2)) {
+                if (!"V".equals(s1) && !"V".equals(s2)) {
                     interpolatedV = Interpolation.linear(saturated[i][index1], saturated[i][2], saturated[i + 1][index1], saturated[i + 1][2], v1);
                 } else {
                     if ("V".equals(s1)) {
                         interpolatedV = v1;
-                    } else if ("V".equals(s2)) {
+                    } else {
                         interpolatedV = v2;
                     }
                 }
-                if (!"U".equals(s1) || !"U".equals(s2)) {
+                if (!"U".equals(s1) && !"U".equals(s2)) {
                     interpolatedU = Interpolation.linear(saturated[i][index1], saturated[i][4], saturated[i + 1][index1], saturated[i + 1][4], v1);
                 } else {
                     if ("U".equals(s1)) {
                         interpolatedU = v1;
-                    } else if ("U".equals(s2)) {
+                    } else {
                         interpolatedU = v2;
                     }
                 }
-                if (!"H".equals(s1) || !"H".equals(s2)) {
+                if (!"H".equals(s1) && !"H".equals(s2)) {
                     interpolatedH = Interpolation.linear(saturated[i][index1], saturated[i][7], saturated[i + 1][index1], saturated[i + 1][7], v1);
                 } else {
                     if ("H".equals(s1)) {
                         interpolatedH = v1;
-                    } else if ("H".equals(s2)) {
+                    } else {
                         interpolatedH = v2;
                     }
                 }
-                if (!"S".equals(s1) || !"S".equals(s2)) {
+                if (!"S".equals(s1) && !"S".equals(s2)) {
                     interpolatedS = Interpolation.linear(saturated[i][index1], saturated[i][10], saturated[i + 1][index1], saturated[i + 1][10], v1);
                 } else {
                     if ("S".equals(s1)) {
                         interpolatedS = v1;
-                    } else if ("S".equals(s2)) {
+                    } else {
                         interpolatedS = v2;
                     }
                 }
@@ -1738,57 +1738,57 @@ public class Controller {
         for (int i = 0; i < saturated.length - 1; i++) {
             if (saturated[i][index1] < v1 && saturated[i + 1][index1] > v1) { // Interpolation
                 double interpolatedP = 0, interpolatedT = 0, interpolatedV = 0, interpolatedU = 0, interpolatedH = 0, interpolatedS = 0;
-                if (!"T".equals(s1) || !"T".equals(s2)) {
+                if (!"T".equals(s1) && !"T".equals(s2)) {
                     interpolatedT = Interpolation.linear(saturated[i][index1], saturated[i][0], saturated[i + 1][index1], saturated[i + 1][0], v1);
                 } else {
                     if ("T".equals(s1)) {
                         interpolatedT = v1;
-                    } else if ("T".equals(s2)) {
+                    } else {
                         interpolatedT = v2;
                     }
                 }
-                if (!"P".equals(s1) || !"P".equals(s2)) {
+                if (!"P".equals(s1) && !"P".equals(s2)) {
                     interpolatedP = Interpolation.linear(saturated[i][index1], saturated[i][1], saturated[i + 1][index1], saturated[i + 1][1], v1);
                 } else {
                     if ("P".equals(s1)) {
                         interpolatedP = v1;
-                    } else if ("P".equals(s2)) {
+                    } else {
                         interpolatedP = v2;
                     }
                 }
-                if (!"V".equals(s1) || !"V".equals(s2)) {
+                if (!"V".equals(s1) && !"V".equals(s2)) {
                     interpolatedV = Interpolation.linear(saturated[i][index1], saturated[i][2], saturated[i + 1][index1], saturated[i + 1][2], v1);
                 } else {
                     if ("V".equals(s1)) {
                         interpolatedV = v1;
-                    } else if ("V".equals(s2)) {
+                    } else {
                         interpolatedV = v2;
                     }
                 }
-                if (!"U".equals(s1) || !"U".equals(s2)) {
+                if (!"U".equals(s1) && !"U".equals(s2)) {
                     interpolatedU = Interpolation.linear(saturated[i][index1], saturated[i][4], saturated[i + 1][index1], saturated[i + 1][4], v1);
                 } else {
                     if ("U".equals(s1)) {
                         interpolatedU = v1;
-                    } else if ("U".equals(s2)) {
+                    } else {
                         interpolatedU = v2;
                     }
                 }
-                if (!"H".equals(s1) || !"H".equals(s2)) {
+                if (!"H".equals(s1) && !"H".equals(s2)) {
                     interpolatedH = Interpolation.linear(saturated[i][index1], saturated[i][7], saturated[i + 1][index1], saturated[i + 1][7], v1);
                 } else {
                     if ("H".equals(s1)) {
                         interpolatedH = v1;
-                    } else if ("H".equals(s2)) {
+                    } else {
                         interpolatedH = v2;
                     }
                 }
-                if (!"S".equals(s1) || !"S".equals(s2)) {
+                if (!"S".equals(s1) && !"S".equals(s2)) {
                     interpolatedS = Interpolation.linear(saturated[i][index1], saturated[i][10], saturated[i + 1][index1], saturated[i + 1][10], v1);
                 } else {
                     if ("S".equals(s1)) {
                         interpolatedS = v1;
-                    } else if ("S".equals(s2)) {
+                    } else {
                         interpolatedS = v2;
                     }
                 }
@@ -1833,57 +1833,57 @@ public class Controller {
         for (int i = 0; i < saturated.length - 1; i++) {
             if (saturated[i][index1] < v1 && saturated[i + 1][index1] > v1) { // Interpolation
                 double interpolatedP = 0, interpolatedT = 0, interpolatedV = 0, interpolatedU = 0, interpolatedH = 0, interpolatedS = 0;
-                if (!"T".equals(s1) || !"T".equals(s2)) {
+                if (!"T".equals(s1) && !"T".equals(s2)) {
                     interpolatedT = Interpolation.linear(saturated[i][index1], saturated[i][0], saturated[i + 1][index1], saturated[i + 1][0], v1);
                 } else {
                     if ("T".equals(s1)) {
                         interpolatedT = v1;
-                    } else if ("T".equals(s2)) {
+                    } else {
                         interpolatedT = v2;
                     }
                 }
-                if (!"P".equals(s1) || !"P".equals(s2)) {
+                if (!"P".equals(s1) && !"P".equals(s2)) {
                     interpolatedP = Interpolation.linear(saturated[i][index1], saturated[i][1], saturated[i + 1][index1], saturated[i + 1][1], v1);
                 } else {
                     if ("P".equals(s1)) {
                         interpolatedP = v1;
-                    } else if ("P".equals(s2)) {
+                    } else {
                         interpolatedP = v2;
                     }
                 }
-                if (!"V".equals(s1) || !"V".equals(s2)) {
+                if (!"V".equals(s1) && !"V".equals(s2)) {
                     interpolatedV = Interpolation.linear(saturated[i][index1], saturated[i][2], saturated[i + 1][index1], saturated[i + 1][2], v1);
                 } else {
                     if ("V".equals(s1)) {
                         interpolatedV = v1;
-                    } else if ("V".equals(s2)) {
+                    } else {
                         interpolatedV = v2;
                     }
                 }
-                if (!"U".equals(s1) || !"U".equals(s2)) {
+                if (!"U".equals(s1) && !"U".equals(s2)) {
                     interpolatedU = Interpolation.linear(saturated[i][index1], saturated[i][4], saturated[i + 1][index1], saturated[i + 1][4], v1);
                 } else {
                     if ("U".equals(s1)) {
                         interpolatedU = v1;
-                    } else if ("U".equals(s2)) {
+                    } else {
                         interpolatedU = v2;
                     }
                 }
-                if (!"H".equals(s1) || !"H".equals(s2)) {
+                if (!"H".equals(s1) && !"H".equals(s2)) {
                     interpolatedH = Interpolation.linear(saturated[i][index1], saturated[i][7], saturated[i + 1][index1], saturated[i + 1][7], v1);
                 } else {
                     if ("H".equals(s1)) {
                         interpolatedH = v1;
-                    } else if ("H".equals(s2)) {
+                    } else {
                         interpolatedH = v2;
                     }
                 }
-                if (!"S".equals(s1) || !"S".equals(s2)) {
+                if (!"S".equals(s1) && !"S".equals(s2)) {
                     interpolatedS = Interpolation.linear(saturated[i][index1], saturated[i][10], saturated[i + 1][index1], saturated[i + 1][10], v1);
                 } else {
                     if ("S".equals(s1)) {
                         interpolatedS = v1;
-                    } else if ("S".equals(s2)) {
+                    } else {
                         interpolatedS = v2;
                     }
                 }
