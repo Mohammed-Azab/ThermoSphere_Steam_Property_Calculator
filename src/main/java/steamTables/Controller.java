@@ -1047,7 +1047,7 @@ public class Controller {
         Steam steam = new Steam();
         steam.setP(P);
         steam.setSteamPhase(steamPhase);
-        return steam;
+        return findTheSteamUsingPX(P, steamPhase.getX());
     }
 
     // Find Steam Using Pressure and Quality
@@ -1058,7 +1058,7 @@ public class Controller {
         setPhase(steam, X);
         double [][] saturated = db.getSaturatedTableP();
         boolean found = false;
-        int row = 0;
+        int row=0;
         for (int i = 0; i < saturated.length; i++) {
             if ( saturated[i][0] == P ) {
                 found =true;
@@ -1072,21 +1072,22 @@ public class Controller {
         if (X == 1.0){
             steam.setSteamPhase(SteamPhase.SaturatedVapour);
             steam.setT(saturated[row][1]);
-            steam.setV(saturated[row][2]);
-            steam.setU(saturated[row][4]);
-            steam.setH(saturated[row][7]);
-            steam.setS(saturated[row][10]);
-        }
-        else if (X == 0.0){
-            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
-            steam.setT(saturated[row][1]);
             steam.setV(saturated[row][3]);
             steam.setU(saturated[row][6]);
             steam.setH(saturated[row][9]);
             steam.setS(saturated[row][12]);
         }
+        else if (X == 0.0){
+            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
+            steam.setT(saturated[row][1]);
+            steam.setV(saturated[row][2]);
+            steam.setU(saturated[row][4]);
+            steam.setH(saturated[row][7]);
+            steam.setS(saturated[row][10]);
+        }
         else {
             steam.setSteamPhase(SteamPhase.SaturatedMixture);
+            steam.setX(X);
             steam.setT(saturated[row][1]);
             double v =saturated[row][2] + X*(saturated[row][3]-saturated[row][2]);
             double u = saturated[row][4] + X*(saturated[row][5]);
