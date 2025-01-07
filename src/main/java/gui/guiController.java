@@ -607,6 +607,11 @@ public class guiController implements Initializable {
             return;
         }
         catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("Missing or Incomplete Data");
+            alert.setContentText("The specified steam is not defined, or the tables do not contain all the required data.");
+            alert.showAndWait();
             resetALl();
         }
 
