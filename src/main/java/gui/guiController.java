@@ -58,8 +58,8 @@ public class guiController implements Initializable {
         controller = new Controller();
         comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
         comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality","Phase"));
-        comboBox11.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
-        comboBox22.setItems(FXCollections.observableArrayList("Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
+        comboBox11.setItems(FXCollections.observableArrayList(" ","Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
+        comboBox22.setItems(FXCollections.observableArrayList(" ","Compressed Liquid","Saturated Liquid", "Saturated Vapour", "Saturated Mixture", "SuperHeated Water"));
 
         tF1.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -82,6 +82,11 @@ public class guiController implements Initializable {
 
                 if (!comboBox3.isVisible()) {
                     unit1.setVisible(true);
+                }
+                if (oldValue != null && oldValue.equals("Phase")) {
+                    comboBox11.setVisible(true);
+                    comboBox11.setValue(" ");
+                    comboBox11.setVisible(false);
                 }
                 if (newValue != null && !comboBox3.isVisible()) {
                     if (newValue.equals("Phase") || newValue.equals("Quality")) {
@@ -112,6 +117,11 @@ public class guiController implements Initializable {
 
                 if (!comboBox3.isVisible()) {
                     unit2.setVisible(true);
+                }
+                if (oldValue != null && oldValue.equals("Phase")) {
+                    comboBox22.setVisible(true);
+                    comboBox22.setValue(" ");
+                    comboBox22.setVisible(false);
                 }
                 if (newValue != null && !comboBox3.isVisible()) {
                     if (newValue.equals("Phase") || newValue.equals("Quality")) {
@@ -328,8 +338,30 @@ public class guiController implements Initializable {
         if (!chosenQ1.equals("Phase")){
             v1 = Double.parseDouble(q1);
         }
+        else {
+            if (comboBox11.isVisible() && ((String) comboBox11.getSelectionModel().getSelectedItem())!=null &&
+                    ((String) comboBox11.getSelectionModel().getSelectedItem()).equals(" ")){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Attention");
+                alert.setHeaderText(null);
+                alert.setContentText("PLease select the phase");
+                alert.showAndWait();
+                return;
+            }
+        }
         if (!chosenQ2.equals("Phase")){
             v2 = Double.parseDouble(q2);
+        }
+        else {
+            if (comboBox22.isVisible() && ((String) comboBox22.getSelectionModel().getSelectedItem())!=null &&
+                    ((String) comboBox22.getSelectionModel().getSelectedItem()).equals(" ")){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Attention");
+                alert.setHeaderText(null);
+                alert.setContentText("PLease select the phase");
+                alert.showAndWait();
+                return;
+            }
         }
 
         Steam steam = new Steam();
@@ -810,6 +842,9 @@ public class guiController implements Initializable {
         unit1.setVisible(true);
         unit2.setVisible(true);
         comboBox1.setVisible(true);
+        comboBox2.setVisible(true);
+        comboBox11.setVisible(false);
+        comboBox22.setVisible(false);
         tF1.clear();
         tF2.clear();
         comboBox1.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
