@@ -20,7 +20,7 @@ public class Main extends Application {
         stage.resizableProperty().setValue(Boolean.FALSE);
         playBackgroundMusic();
         stage.show();
-    }
+    }   
 
     public static void playBackgroundMusic() {
         try {

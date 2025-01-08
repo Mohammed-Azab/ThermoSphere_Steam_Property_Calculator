@@ -1085,71 +1085,137 @@ public class Controller {
         Steam steam = new Steam();
         steam.setP(P);
         steam.setS(s);
+        boolean superHeated = false;
+        boolean compressed = false;
         double [][] saturated = db.getSaturatedTableP();
+        if (P > 22064){
+            superHeated = true;
+        }
         boolean found = false;
         boolean f = false;
         boolean g = false;
+        boolean m = false;
         int row = 0;
         for (int i = 0; i < saturated.length; i++) {
-            if ( saturated[i][0] == P ) {
+            if (saturated[i][0] == P) {
                 found =true;
                 row=i;
-                break;
-            }
-            if (saturated[i][10] == s) {
-                found =true;
-                row=i;
-                g=true;
-                break;
-            }
-            if (saturated[i][12] == s) {
-                found =true;
-                row=i;
-                f=true;
                 break;
             }
         }
-        if (!found) {
-            throw new NotDefinedException();
+        if (!found && !superHeated) {
+            return interpolatedSatP(P, s, "P", "S", saturated);
+        }
+        if (saturated[row][10] == s) {
+            f=true;
+        }
+        if (saturated[row][12] == s) {
+            g=true;
+        }
+        if (saturated[row][10] < s && saturated[row][12] > s) {
+            m=true;
+        }
+        if (saturated[row][12] < s) {
+            superHeated=true;
+        }
+        if (saturated[row][10] > s) {
+            compressed=true;
         }
         steam.setT(saturated[row][1]);
-        if (g){
-            steam.setSteamPhase(SteamPhase.SaturatedVapour);
-            steam.setX(1);
+        if (f){
+            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
             steam.setV(saturated[row][2]);
             steam.setU(saturated[row][4]);
             steam.setH(saturated[row][7]);
             steam.setS(saturated[row][10]);
+            return steam;
         }
-        else if (f){
-            steam.setSteamPhase(SteamPhase.SaturatedLiquid);
-            steam.setX(0);
+        else if (g){
+            steam.setSteamPhase(SteamPhase.SaturatedVapour);
             steam.setV(saturated[row][3]);
             steam.setU(saturated[row][6]);
             steam.setH(saturated[row][9]);
             steam.setS(saturated[row][12]);
+            return steam;
         }
-        else {
-            double X = (s-saturated[row][10])/saturated[row][11] ; //s = sf + X * sfg
-            steam.setX(X);
+        else if (superHeated){
+            P/=1000;
+            steam.setSteamPhase(SteamPhase.SuperHeatedWater);
+            double [][] table = db.getSuperHeatedTable();
+            for (int i = 0; i < table.length; i++) {
+                if (P == table[i][0]) {
+                    if (table[i][5] == s) {
+                        steam.setT(table[i][1]);
+                        steam.setV(table[i][2]);
+                        steam.setU(table[i][3]);
+                        steam.setS(table[i][5]);
+                        return steam;
+                    }
+                }
+            }
+            steam = interpolatedSuperHeatedOrCompressed(P,s,"P","S",table);
+            steam.setSteamPhase(SteamPhase.SuperHeatedWater);
+            return steam;
+        }
+        else if (m){
+            double X = (s-saturated[row][10])/(saturated[row][11]) ; //u = uf + X * ufg
             steam.setSteamPhase(SteamPhase.SaturatedMixture);
-            double v =saturated[row][2] + X*(saturated[row][3]-saturated[row][2]);
-            double u = saturated[row][4] + X*(saturated[row][5]);
+            steam.setX(X);
+            double u =saturated[row][4] + X*saturated[row][5];
+            double v = saturated[row][2] + X*(saturated[row][3]-saturated[row][2]);
             double h = saturated[row][7] + X*(saturated[row][8]);
-            steam.setV(v);
             steam.setU(u);
+            steam.setV(v);
             steam.setH(h);
         }
-
+        else if (compressed){
+            steam.setSteamPhase(SteamPhase.CompressedLiquid);
+            double T =saturated[row][1];
+            saturated = db.getSaturatedTableT();
+            P/=1000;
+            if (P<5){ // using saturated Tables
+                steam.setT(T);
+                for (int i =0 ;i<saturated.length;i++){
+                    if (T == saturated[i][0]) {
+                        steam.setT(saturated[i][0]);
+                        steam.setP(saturated[i][1]);
+                        steam.setU(saturated[i][4]);
+                        steam.setV(saturated[i][2]);
+                        return steam;
+                    }
+                }
+                steam= interpolatedSatT(T,s,"T","S",saturated);
+                steam.setP(P);
+                steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                return steam;
+            }
+            double [][] table = db.getCompressedLiquidTable();
+            for (int i = 0; i < table.length; i++) {
+                if (P == table[i][0]) {
+                    if (table[i][5] == s) {
+                        steam.setT(table[i][1]);
+                        steam.setU(table[i][3]);
+                        steam.setV(table[i][2]);
+                        steam.setS(table[i][5]);
+                        return steam;
+                    }
+                }
+            }
+            steam = interpolatedSuperHeatedOrCompressed(P,s,"P","S",table);
+            steam.setSteamPhase(SteamPhase.CompressedLiquid);
+            return steam;
+        }
         return steam;
     }
 
     public Steam findTheSteamUsingUV(double u, double v) {
         Steam steam = new Steam();
-        steam.setV(v);
         steam.setU(u);
+        steam.setV(v);
         return steam;
     }
+
+
 
     public Steam findTheSteamUsingUX(double u, double X) { // is it neccessry
         Steam steam = new Steam();
