@@ -3,7 +3,6 @@ package gui;
 import Exceptions.CannotBeInterpolated;
 import Exceptions.MoreInfoNeeded;
 import Exceptions.NotDefinedException;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,7 +17,6 @@ import steamTables.Controller;
 import steamTables.Steam;
 import steamTables.SteamPhase;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -301,7 +299,7 @@ public class guiController implements Initializable {
     public void info(MouseEvent mouseEvent) {
         try {
             Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/Info.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/Info.fxml"));
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);

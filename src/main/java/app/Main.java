@@ -13,7 +13,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception { // need to add the X in GUi
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/MainInterface.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/MainInterface.fxml"));
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -25,7 +25,7 @@ public class Main extends Application {
     public static void playBackgroundMusic() {
         try {
             String musicFilePath = Objects.requireNonNull(Main.class.getResource(
-                    "/PufinoHarmony.mp3")).toExternalForm();
+                    "/sounds/PufinoHarmony.mp3")).toExternalForm();
             Media backgroundMusic = new Media(musicFilePath);
             MediaPlayer backgroundMediaPlayer = new MediaPlayer(backgroundMusic);
             backgroundMediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the music
