@@ -1,6 +1,7 @@
 package gui;
 
 import Exceptions.CannotBeInterpolated;
+import Exceptions.MoreInfoNeeded;
 import Exceptions.NotDefinedException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -247,17 +248,17 @@ public class guiController implements Initializable {
             } else if ("Pressure".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
             } else if ("Volume".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy","Enthalpy", "Entropy", "Quality", "Phase"));
             } else if ("Enthalpy".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume","Internal Energy", "Entropy", "Quality", "Phase"));
             } else if ("Entropy".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure","Volume", "Internal Energy", "Enthalpy", "Quality", "Phase"));
             } else if ("Quality".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume","Internal Energy", "Volume", "Enthalpy", "Entropy"));
             } else if ("Phase".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure","Volume", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
             } else if ("Internal Energy".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
             } else if ("Pressure MPa".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Temperature C", "Internal Energy kJ/kg", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg · K"));
             } else if ("Temperature C".equals(selectedOption)) {
@@ -436,6 +437,15 @@ public class guiController implements Initializable {
                 else if (chosenQ2.equals("Phase")) {
                     steam = controller.findTheSteamUsingSPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
                 }
+                else if (chosenQ2.equals("Internal Energy")) {
+                    steam = controller.findTheSteamUsingUS(v2, v1);
+                }
+                else if (chosenQ2.equals("Enthalpy")) {
+                    steam = controller.findTheSteamUsingHS(v1, v2);
+                }
+                else if (chosenQ2.equals("Volume")) {
+                    steam = controller.findTheSteamUsingVS(v2, v1);
+                }
             }
             if (chosenQ1.equals("Enthalpy")) {
                 if (chosenQ2.equals("Temperature")) {
@@ -451,6 +461,15 @@ public class guiController implements Initializable {
                 }
                 else if (chosenQ2.equals("Phase")) {
                     steam = controller.findTheSteamUsingHPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
+                }
+                else if (chosenQ2.equals("Internal Energy")) {
+                    steam = controller.findTheSteamUsingUH(v2, v1);
+                }
+                else if (chosenQ2.equals("Entropy")) {
+                    steam = controller.findTheSteamUsingHS(v1, v2);
+                }
+                else if (chosenQ2.equals("Volume")) {
+                    steam = controller.findTheSteamUsingVH(v2, v1);
                 }
             }
             if (chosenQ1.equals("Quality")) {
@@ -489,6 +508,12 @@ public class guiController implements Initializable {
                 }
                 else if (chosenQ2.equals("Phase")) {
                     steam = controller.findTheSteamUsingVPhase(v1, SteamPhase.getPhase(comboBox22.getValue()));
+                }
+                else if (chosenQ2.equals("Entropy")) {
+                    steam = controller.findTheSteamUsingVS(v1, v2);
+                }
+                else if (chosenQ2.equals("Enthalpy")) {
+                    steam = controller.findTheSteamUsingVH(v1, v2);
                 }
             }
             if (chosenQ1.equals("Phase")) {
@@ -657,14 +682,23 @@ public class guiController implements Initializable {
             alert.showAndWait();
             return;
         }
-        catch (Exception e) {
+        catch (MoreInfoNeeded moreInfoNeeded){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information");
             alert.setHeaderText("Missing or Incomplete Data");
-            alert.setContentText("The specified steam is not defined, or the tables do not contain all the required data.");
+            alert.setContentText("A third Quantity is needed");
             alert.showAndWait();
+            return;
         }
-
+        catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error occured");
+            alert.setHeaderText("Missing or Incomplete Data");
+            alert.setContentText("Please try again");
+            resetALl();
+            alert.showAndWait();
+            return;
+        }
 
         if (steam == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
