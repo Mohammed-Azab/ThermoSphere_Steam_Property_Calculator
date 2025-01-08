@@ -59,7 +59,7 @@ The **ThermoSphere** project aims to:
   - JavaFX for GUI components
   - Apache Commons Math (optional for advanced calculations)
   
-- **Data Source**: Reference steam tables from reliable textbooks or online resources.
+- **Data Source**: Reference steam tables from reliable textbooks which exist in the resources file.
 
 ---
 
