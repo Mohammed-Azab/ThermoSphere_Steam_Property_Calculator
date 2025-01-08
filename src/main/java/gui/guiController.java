@@ -154,7 +154,6 @@ public class guiController implements Initializable {
                     alert.setTitle("Information");
                     alert.setHeaderText(null);
                     alert.setContentText("Please enter the Quality value for the Saturated Mixture");
-                    System.out.println("All is okay");
                     alert.showAndWait();
                 }
                 else if (newValue.equals("Compressed Liquid")) {
@@ -569,14 +568,12 @@ public class guiController implements Initializable {
             if (chosenQ1.equals("Pressure MPa")) {
                 SteamPhase steamPhase = SteamPhase.getPhase(comboBox3.getValue());
                 if (chosenQ2.equals("Temperature C")) {
-                    System.out.println("Temperature C");
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,1,steamPhase);
                 }
                 else if (chosenQ2.equals("Volume m3/kg")) {
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,2,steamPhase);
                 }
                 else if (chosenQ2.equals("Internal Energy kJ/kg")) {
-                    System.out.println("Internal Energy kJ/kg");
                     steam = controller.findTheSuperHeatedSteamOrCompressedLiquid(v1,v2,0,3,steamPhase);
                 }
                 else if (chosenQ2.equals("Enthalpy kJ/kg")) {

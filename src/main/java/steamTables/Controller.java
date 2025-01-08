@@ -428,10 +428,8 @@ public class Controller {
                 return steam;
             }
             else {
-                System.out.println("Entered");
                 double [][] table = hf < h? db.getSuperHeatedTable(): db.getCompressedLiquidTable();
                 steam.setSteamPhase(hf < h? SteamPhase.SuperHeatedWater: SteamPhase.CompressedLiquid);
-                System.out.println(steam.getSteamPhase());
                 for (int i = 0; i < table.length; i++) {
                     if (table[i][1] == T && table[i][4] == h) {
                         steam.setV(table[i][2]);
@@ -533,8 +531,6 @@ public class Controller {
             double sf=0;
             for (int i = 0; i < saturated.length; i++) {
                 if ( saturated[i][0] == T ) {
-                    System.out.println("foundT");
-                    System.out.println(T);
                     found =true;
                     row=i;
                     sf =saturated[i][10];
