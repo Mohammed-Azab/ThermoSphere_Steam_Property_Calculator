@@ -12,8 +12,10 @@ import java.util.Objects;
 
 public class Main extends Application {
 
+    private static MediaPlayer backgroundMediaPlayer;
+
     @Override
-    public void start(Stage stage) throws Exception { // need to add the X in GUi
+    public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/MainInterface.fxml"));
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
@@ -24,20 +26,27 @@ public class Main extends Application {
         stage.resizableProperty().setValue(Boolean.FALSE);
         playBackgroundMusic();
         stage.show();
-    }   
+    }
 
     public static void playBackgroundMusic() {
         try {
-            String musicFilePath = Objects.requireNonNull(Main.class.getResource(
-                    "/sounds/PufinoHarmony.mp3")).toExternalForm();
-            Media backgroundMusic = new Media(musicFilePath);
-            MediaPlayer backgroundMediaPlayer = new MediaPlayer(backgroundMusic);
-            backgroundMediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the music
+            if (backgroundMediaPlayer == null) {
+                String musicFilePath = Objects.requireNonNull(Main.class.getResource(
+                        "/sounds/PufinoHarmony.mp3")).toExternalForm();
+                Media backgroundMusic = new Media(musicFilePath);
+                backgroundMediaPlayer = new MediaPlayer(backgroundMusic);
+                backgroundMediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the music
+            }
             backgroundMediaPlayer.play();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Failed to load background music: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public static void ensureMusicPlaying() {
+        if (backgroundMediaPlayer != null && backgroundMediaPlayer.getStatus() != MediaPlayer.Status.PLAYING) {
+            backgroundMediaPlayer.play();
         }
     }
 
