@@ -54,7 +54,13 @@ Dice-Realms/
 │          │
 │          ├── images/
 │          │   ├── general.png
-│          │   ├── P.png
+│          │   ├── Info1.png
+│          │   ├── Info2.png
+│          │   ├── Info3.png
+│          │   ├── Info4.png
+│          │   ├── Info5.png
+│          │   ├── arrowLeft.png
+│          │   ├── arrowRight.png
 │          │   ├── SaturatedP.png
 │          │   └── Thermo.png
 │          │

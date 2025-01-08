@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -17,6 +18,9 @@ public class Main extends Application {
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.jpg")));
+        stage.getIcons().add(appIcon);
+        stage.setTitle("ThermoSphere");
         stage.resizableProperty().setValue(Boolean.FALSE);
         playBackgroundMusic();
         stage.show();

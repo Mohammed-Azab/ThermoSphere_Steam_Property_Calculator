@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -18,6 +19,7 @@ import steamTables.Steam;
 import steamTables.SteamPhase;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class guiController implements Initializable {
@@ -303,6 +305,9 @@ public class guiController implements Initializable {
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.jpg")));
+            stage.getIcons().add(appIcon);
+            stage.setTitle("Info");
             stage.resizableProperty().setValue(Boolean.FALSE);
             stage.show();
         }
