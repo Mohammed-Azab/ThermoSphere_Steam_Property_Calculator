@@ -1558,24 +1558,143 @@ public class Controller {
         if (phase == SteamPhase.CompressedLiquid){
             table = db.getCompressedLiquidTable();
             if (i==0){
-                if (x<5){
-                    throw new NotDefinedException();
+                if (x<5) {
+                    boolean found = false;
+                    double T2=0;
+                    double saturated[][] = db.getSaturatedTableP();
+                    steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                    for (int k = 0; k < saturated.length; k++) {
+                        if (saturated[k][0] == x) {
+                            found = true;
+                            T2 = saturated[i][1];
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        for (int k = 0; k < saturated.length - 1; k++) {
+                            if (saturated[k][0] < x && saturated[k + 1][0] > x) { // Interpolation
+                                double interpolatedT = Interpolation.linear(saturated[k][0], saturated[k][1],
+                                        saturated[k + 1][0], saturated[k + 1][1], x);
+                                double interpolatedU = Interpolation.linear(saturated[k][0], saturated[k][4],
+                                        saturated[k + 1][0], saturated[k + 1][4], x);
+                                double interpolatedV = Interpolation.linear(saturated[k][0], saturated[k][2],
+                                        saturated[k + 1][0], saturated[k + 1][2], x);
+                                double interpolatedH = Interpolation.linear(saturated[k][0], saturated[k][7],
+                                        saturated[k + 1][0], saturated[k + 1][7], x);
+                                double interpolatedS = Interpolation.linear(saturated[k][0], saturated[k][10],
+                                        saturated[k + 1][0], saturated[k + 1][10], x);
+                                steam.setU(interpolatedU);
+                                steam.setV(interpolatedV);
+                                steam.setH(interpolatedH);
+                                steam.setS(interpolatedS);
+                                steam.setP(x);
+                                steam.setT(interpolatedT);
+                                return steam;
+                            }
+                        }
+                        throw new NotDefinedException("Pressure value not found for interpolation.");
+                    }
+                    saturated = db.getSaturatedTableT();
+                    for (double[] doubles : saturated) {
+                        if (doubles[0] == T2) {
+                            steam.setP(x);
+                            steam.setT(T2);
+                            steam.setV(doubles[2]);
+                            steam.setU(doubles[4]);
+                            steam.setH(doubles[7]);
+                            steam.setS(doubles[10]);
+                            return steam;
+                        }
+                    }
+
+                    String string = switch (j) {
+                        case 1 -> "T";
+                        case 2 -> "V";
+                        case 3 -> "U";
+                        case 4 -> "H";
+                        case 5 -> "S";
+                        default -> "X";
+                    };
+                    steam = interpolatedSatT(x,y,"P",string,saturated);
+                    steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                    return steam;
                 }
             }
             if (j==0){
-                if (y<5){
-                    throw new NotDefinedException();
+                if (x<5) {
+                    int row =0;
+                    boolean found = false;
+                    double T2=0;
+                    double saturated[][] = db.getSaturatedTableP();
+                    steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                    for (int k = 0; k < saturated.length; k++) {
+                        if (saturated[k][0] == y) {
+                            found = true;
+                            row = i;
+                            T2 = saturated[i][1];
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        for (int k = 0; k < saturated.length - 1; k++) {
+                            if (saturated[k][0] < y && saturated[k + 1][0] > y) { // Interpolation
+                                double interpolatedT = Interpolation.linear(saturated[k][0], saturated[k][1],
+                                        saturated[k + 1][0], saturated[k + 1][1], y);
+                                double interpolatedU = Interpolation.linear(saturated[k][0], saturated[k][4],
+                                        saturated[k + 1][0], saturated[k + 1][4], y);
+                                double interpolatedV = Interpolation.linear(saturated[k][0], saturated[k][2],
+                                        saturated[k + 1][0], saturated[k + 1][2], y);
+                                double interpolatedH = Interpolation.linear(saturated[k][0], saturated[k][7],
+                                        saturated[k + 1][0], saturated[k + 1][7], y);
+                                double interpolatedS = Interpolation.linear(saturated[k][0], saturated[k][10],
+                                        saturated[k + 1][0], saturated[k + 1][10], y);
+                                steam.setU(interpolatedU);
+                                steam.setV(interpolatedV);
+                                steam.setH(interpolatedH);
+                                steam.setS(interpolatedS);
+                                steam.setP(y);
+                                steam.setT(interpolatedT);
+                                return steam;
+                            }
+                        }
+                        throw new NotDefinedException("Pressure value not found for interpolation.");
+                    }
+                    saturated = db.getSaturatedTableT();
+                    for (double[] doubles : saturated) {
+                        if (doubles[0] == T2) {
+                            steam.setP(y);
+                            steam.setT(T2);
+                            steam.setV(doubles[2]);
+                            steam.setU(doubles[4]);
+                            steam.setH(doubles[7]);
+                            steam.setS(doubles[10]);
+                            return steam;
+                        }
+                    }
+
+                    String string = switch (i) {
+                        case 1 -> "T";
+                        case 2 -> "V";
+                        case 3 -> "U";
+                        case 4 -> "H";
+                        case 5 -> "S";
+                        default -> "X";
+                    };
+                    steam = interpolatedSatT(x,y,string,"P",saturated);
+                    steam.setSteamPhase(SteamPhase.CompressedLiquid);
+                    return steam;
                 }
             }
         }
-        for (int k=0 ;k<table.length;k++) { //find before interpolation
-            if (table[k][i] == x && table[k][j] == y) {
-                steam.setP(table[k][0]);
-                steam.setT(table[k][1]);
-                steam.setV(table[k][2]);
-                steam.setU(table[k][3]);
-                steam.setH(table[k][4]);
-                steam.setS(table[k][5]);
+
+        for (double[] doubles : table) { //find before interpolation
+            if (doubles[i] == x && doubles[j] == y) {
+                steam.setP(doubles[0]);
+                steam.setT(doubles[1]);
+                steam.setV(doubles[2]);
+                steam.setU(doubles[3]);
+                steam.setH(doubles[4]);
+                steam.setS(doubles[5]);
                 return steam;
             }
         }
