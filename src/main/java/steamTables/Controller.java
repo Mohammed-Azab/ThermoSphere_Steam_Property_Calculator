@@ -5,6 +5,8 @@ import Exceptions.CannotBeInterpolated;
 import Exceptions.MoreInfoNeeded;
 import Exceptions.NotDefinedException;
 
+import java.security.spec.ECField;
+
 public class Controller {
 
     private static DataBase db ;
@@ -1698,61 +1700,36 @@ public class Controller {
                 return steam;
             }
         }
-        for (int k=0 ;k<table.length;k++) { //interpolation
-            if (table[k][i] > x && i==0) { // when it's pressure can't do interpolation
-                break;
-            }
-            if (table[k][j] > y && j==0) { // when it's pressure can't do interpolation
-                break;
-            }
-            if (k != table.length - 1 && table[k][i] < x && table[k + 1][j] > x) { //interpolation
-                double p1 = table[k][0], p2 = table[k + 1][0];
-                double t1 = table[k][1], t2 = table[k + 1][1];
-                double v1 = table[k][2], v2 = table[k + 1][2];
-                double u1 = table[k][3], u2 = table[k + 1][3];
-                double h1 = table[k][4], h2 = table[k + 1][4];
-                double s1 = table[k][5], s2 = table[k + 1][5];
-                double interpolatedP = 0, interpolatedT = 0, interpolatedV = 0, interpolatedU = 0, interpolatedH = 0, interpolatedS = 0;
-                try {
-                    interpolatedP = Interpolation.linear(table[k][0], p1, table[k + 1][0], p2, x);
-                } catch (CannotBeInterpolated e) {
-                    interpolatedP = p1;
-                }
-                try {
-                    interpolatedT = Interpolation.linear(table[k][0], t1, table[k + 1][0], t2, x);
-                } catch (CannotBeInterpolated e) {
-                    interpolatedT = t1;
-                }
-                try {
-                    interpolatedV = Interpolation.linear(table[k][0], v1, table[k + 1][0], v2, x);
-                } catch (CannotBeInterpolated e) {
-                    interpolatedV = v1;
-                }
-                try {
-                    interpolatedU = Interpolation.linear(table[k][0], u1, table[k + 1][0], u2, x);
-                } catch (CannotBeInterpolated e) {
-                    interpolatedU = u1;
-                }
-                try {
-                    interpolatedH = Interpolation.linear(table[k][0], h1, table[k + 1][0], h2, x);
-                } catch (CannotBeInterpolated e) {
-                    interpolatedH = h1;
-                }
-                try {
-                    interpolatedS = Interpolation.linear(table[k][0], s1, table[k + 1][0], s2, x);
-                } catch (CannotBeInterpolated e) {
-                    interpolatedS = s1;
-                }
-                steam.setP(interpolatedP);
-                steam.setT(interpolatedT);
-                steam.setV(interpolatedV);
-                steam.setU(interpolatedU);
-                steam.setH(interpolatedH);
-                steam.setS(interpolatedS);
-                return steam;
-                }
-            }
-        throw new NotDefinedException(phase +" is not defined");
+        String str1 = switch (i) {
+            case 0 -> "P";
+            case 1 -> "T";
+            case 2 -> "V";
+            case 3 -> "U";
+            case 4 -> "H";
+            case 5 -> "S";
+            default -> "X";
+        };
+        String str2 = switch (j) {
+            case 0 -> "P";
+            case 1 -> "T";
+            case 2 -> "V";
+            case 3 -> "U";
+            case 4 -> "H";
+            case 5 -> "S";
+            default -> "X";
+        };
+        String str = str1.equals("P")? str2 : str1;
+        double z= j==0? y : x;
+        double m = z==x? y : x;
+        try {
+            steam = interpolatedSuperHeatedOrCompressed(z,m,"P",str,table);
+            steam.setSteamPhase(phase);
+            return steam;
+        }
+        catch (Exception e) {
+            throw new NotDefinedException(phase +" is not defined");
+        }
+
     }
 
     private Steam interpolatedSatT(double v1, double v2, String s1, String s2, double [][] saturated) throws CannotBeInterpolated {

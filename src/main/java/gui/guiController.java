@@ -269,6 +269,9 @@ public class guiController implements Initializable {
             } else if ("Entropy kJ/kg · K".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Volume m3/kg", "Internal Energy kJ/kg", "Enthalpy kJ/kg"));
             }
+            else if ("Volume m3/kg".equals(selectedOption)) {
+                comboBox.setItems(FXCollections.observableArrayList("Pressure MPa", "Temperature C", "Internal Energy kJ/kg", "Enthalpy kJ/kg", "Entropy kJ/kg · K"));
+            }
             return !comboBox.getItems().contains(currentOption);
         } catch (StackOverflowError e) {
             resetALl();
@@ -884,5 +887,11 @@ public class guiController implements Initializable {
         comboBox2.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality","Phase"));
         resetButton.setVisible(false);
         nOfQ.setText("2");
+        comboBox11.setVisible(true);
+        comboBox11.setValue(" ");
+        comboBox11.setVisible(false);
+        comboBox22.setVisible(true);
+        comboBox22.setValue(" ");
+        comboBox22.setVisible(false);
     }
 }
