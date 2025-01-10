@@ -44,7 +44,6 @@ public class Controller {
                             saturated[i + 1][0], saturated[i + 1][7], P);
                     double interpolatedS = Interpolation.linear(saturated[i][0], saturated[i][10],
                             saturated[i + 1][0], saturated[i + 1][10], P);
-
                     steam.setU(interpolatedU);
                     steam.setV(interpolatedV);
                     steam.setH(interpolatedH);
@@ -465,7 +464,7 @@ public class Controller {
             }
         }
         if (!found) {
-            throw new NotDefinedException();
+            return interpolatedSatT(T, X, "T", "X", saturated);
         }
         if (X == 1.0){
             steam.setSteamPhase(SteamPhase.SaturatedVapour);
@@ -758,27 +757,7 @@ public class Controller {
             }
         }
         if (!found && !superHeated) {
-            for (int i = 0; i < saturated.length; i++) {
-                if (i != saturated.length - 1 && saturated[i][0] < P && saturated[i + 1][0] > P) { // interpolation
-                    found = true;
-                    double t1 = saturated[i][1], t2 = saturated[i + 1][1];
-                    double v1 = saturated[i][2], v2 = saturated[i + 1][2];
-                    double h1 = saturated[i][7], h2 = saturated[i + 1][7];
-                    double s1 = saturated[i][10], s2 = saturated[i + 1][10];
-
-                    double interpolatedT = Interpolation.linear(saturated[i][0], t1, saturated[i + 1][0], t2, P);
-                    double interpolatedV = Interpolation.linear(saturated[i][0], v1, saturated[i + 1][0], v2, P);
-                    double interpolatedH = Interpolation.linear(saturated[i][0], h1, saturated[i + 1][0], h2, P);
-                    double interpolatedS = Interpolation.linear(saturated[i][0], s1, saturated[i + 1][0], s2, P);
-
-                    steam.setT(interpolatedT);
-                    steam.setV(interpolatedV);
-                    steam.setH(interpolatedH);
-                    steam.setS(interpolatedS);
-                    steam.setSteamPhase(SteamPhase.SaturatedMixture);
-                    return steam;
-                }
-            }
+            return interpolatedSatP(P, u, "P", "U", saturated);
         }
         if (saturated[row][4] == u) {
             f=true;
@@ -1043,7 +1022,7 @@ public class Controller {
             }
         }
         if (!found) {
-            throw new NotDefinedException();
+            return interpolatedSatP(P, X, "P", "X", saturated);
         }
         if (X == 1.0){
             steam.setSteamPhase(SteamPhase.SaturatedVapour);
@@ -1734,7 +1713,7 @@ public class Controller {
 
     private Steam interpolatedSatT(double v1, double v2, String s1, String s2, double [][] saturated) throws CannotBeInterpolated {
         Steam steam = new Steam();
-        int index1 = 0;
+        int index1 = 0, index2=0, index3=0;
         switch (s1) {
             case "T":
                 index1 = 0;
@@ -1757,9 +1736,36 @@ public class Controller {
             default:
                 throw new CannotBeInterpolated(s1);
         }
+        switch (s2) {
+            case "T":
+                index2 = 0;
+                break;
+            case "P":
+                index2 = 1;
+                break;
+            case "V":
+                index2 = 2; index3=3;
+                break;
+            case "U":
+                index2 = 4; index3=6;
+                break;
+            case "H":
+                index2 = 7; index3=9;
+                break;
+            case "X":
+            case "S":
+                index2 = 10; index3=12;
+                break;
+            default:
+                throw new CannotBeInterpolated(s1);
+        }
         for (int i = 0; i < saturated.length - 1; i++) {
             if (saturated[i][index1] < v1 && saturated[i + 1][index1] > v1) { // Interpolation
                 double interpolatedP = 0, interpolatedT = 0, interpolatedV = 0, interpolatedU = 0, interpolatedH = 0, interpolatedS = 0;
+                double Valf= Interpolation.linear(saturated[i][index1], saturated[i][index2], saturated[i + 1][index1], saturated[i + 1][index2], v1);
+                double Valg= Interpolation.linear(saturated[i][index1], saturated[i][index3], saturated[i + 1][index1], saturated[i + 1][index3], v1);
+                double x = s2.equals("X")? v2 : (v2 - Valf)/ (Valg - Valf);
+                steam.setX(x);
                 if (!"T".equals(s1) && !"T".equals(s2)) {
                     interpolatedT = Interpolation.linear(saturated[i][index1], saturated[i][0], saturated[i + 1][index1], saturated[i + 1][0], v1);
                 } else {
@@ -1779,7 +1785,9 @@ public class Controller {
                     }
                 }
                 if (!"V".equals(s1) && !"V".equals(s2)) {
-                    interpolatedV = Interpolation.linear(saturated[i][index1], saturated[i][2], saturated[i + 1][index1], saturated[i + 1][2], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][2], saturated[i + 1][index1], saturated[i + 1][2], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][3], saturated[i + 1][index1], saturated[i + 1][3], v1);
+                    interpolatedV = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("V".equals(s1)) {
                         interpolatedV = v1;
@@ -1788,7 +1796,9 @@ public class Controller {
                     }
                 }
                 if (!"U".equals(s1) && !"U".equals(s2)) {
-                    interpolatedU = Interpolation.linear(saturated[i][index1], saturated[i][4], saturated[i + 1][index1], saturated[i + 1][4], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][4], saturated[i + 1][index1], saturated[i + 1][4], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][6], saturated[i + 1][index1], saturated[i + 1][6], v1);
+                    interpolatedU = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("U".equals(s1)) {
                         interpolatedU = v1;
@@ -1797,7 +1807,9 @@ public class Controller {
                     }
                 }
                 if (!"H".equals(s1) && !"H".equals(s2)) {
-                    interpolatedH = Interpolation.linear(saturated[i][index1], saturated[i][7], saturated[i + 1][index1], saturated[i + 1][7], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][7], saturated[i + 1][index1], saturated[i + 1][7], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][9], saturated[i + 1][index1], saturated[i + 1][9], v1);
+                    interpolatedH = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("H".equals(s1)) {
                         interpolatedH = v1;
@@ -1806,7 +1818,9 @@ public class Controller {
                     }
                 }
                 if (!"S".equals(s1) && !"S".equals(s2)) {
-                    interpolatedS = Interpolation.linear(saturated[i][index1], saturated[i][10], saturated[i + 1][index1], saturated[i + 1][10], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][10], saturated[i + 1][index1], saturated[i + 1][10], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][12], saturated[i + 1][index1], saturated[i + 1][12], v1);
+                    interpolatedS = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("S".equals(s1)) {
                         interpolatedS = v1;
@@ -1827,7 +1841,7 @@ public class Controller {
     }
     private Steam interpolatedSatP(double v1, double v2, String s1, String s2, double [][] saturated) throws CannotBeInterpolated {
         Steam steam = new Steam();
-        int index1 = 0;
+        int index1 = 0, index2=0, index3=0;
         switch (s1) {
             case "T":
                 index1 = 1;
@@ -1850,8 +1864,35 @@ public class Controller {
             default:
                 throw new CannotBeInterpolated(s1);
         }
+        switch (s2) {
+            case "T":
+                index2 = 1;
+                break;
+            case "P":
+                index2 = 0;
+                break;
+            case "V":
+                index2 = 2; index3=3;
+                break;
+            case "U":
+                index2 = 4; index3=6;
+                break;
+            case "H":
+                index2 = 7; index3=9;
+                break;
+            case "X":
+            case "S":
+                index2 = 10; index3=12;
+                break;
+            default:
+                throw new CannotBeInterpolated(s1);
+        }
         for (int i = 0; i < saturated.length - 1; i++) {
             if (saturated[i][index1] < v1 && saturated[i + 1][index1] > v1) { // Interpolation
+                double Valf= Interpolation.linear(saturated[i][index1], saturated[i][index2], saturated[i + 1][index1], saturated[i + 1][index2], v1);
+                double Valg= Interpolation.linear(saturated[i][index1], saturated[i][index3], saturated[i + 1][index1], saturated[i + 1][index3], v1);
+                double x = s2.equals("X")? v2 : (v2 - Valf)/ (Valg - Valf);
+                steam.setX(x);
                 double interpolatedP = 0, interpolatedT = 0, interpolatedV = 0, interpolatedU = 0, interpolatedH = 0, interpolatedS = 0;
                 if (!"T".equals(s1) && !"T".equals(s2)) {
                     interpolatedT = Interpolation.linear(saturated[i][index1], saturated[i][1], saturated[i + 1][index1], saturated[i + 1][1], v1);
@@ -1872,7 +1913,9 @@ public class Controller {
                     }
                 }
                 if (!"V".equals(s1) && !"V".equals(s2)) {
-                    interpolatedV = Interpolation.linear(saturated[i][index1], saturated[i][2], saturated[i + 1][index1], saturated[i + 1][2], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][2], saturated[i + 1][index1], saturated[i + 1][2], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][3], saturated[i + 1][index1], saturated[i + 1][3], v1);
+                    interpolatedV = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("V".equals(s1)) {
                         interpolatedV = v1;
@@ -1881,7 +1924,9 @@ public class Controller {
                     }
                 }
                 if (!"U".equals(s1) && !"U".equals(s2)) {
-                    interpolatedU = Interpolation.linear(saturated[i][index1], saturated[i][4], saturated[i + 1][index1], saturated[i + 1][4], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][4], saturated[i + 1][index1], saturated[i + 1][4], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][6], saturated[i + 1][index1], saturated[i + 1][6], v1);
+                    interpolatedU = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("U".equals(s1)) {
                         interpolatedU = v1;
@@ -1890,7 +1935,9 @@ public class Controller {
                     }
                 }
                 if (!"H".equals(s1) && !"H".equals(s2)) {
-                    interpolatedH = Interpolation.linear(saturated[i][index1], saturated[i][7], saturated[i + 1][index1], saturated[i + 1][7], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][7], saturated[i + 1][index1], saturated[i + 1][7], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][9], saturated[i + 1][index1], saturated[i + 1][9], v1);
+                    interpolatedH = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("H".equals(s1)) {
                         interpolatedH = v1;
@@ -1899,7 +1946,9 @@ public class Controller {
                     }
                 }
                 if (!"S".equals(s1) && !"S".equals(s2)) {
-                    interpolatedS = Interpolation.linear(saturated[i][index1], saturated[i][10], saturated[i + 1][index1], saturated[i + 1][10], v1);
+                    double Qf= Interpolation.linear(saturated[i][index1], saturated[i][10], saturated[i + 1][index1], saturated[i + 1][10], v1);
+                    double Qg= Interpolation.linear(saturated[i][index1], saturated[i][12], saturated[i + 1][index1], saturated[i + 1][12], v1);
+                    interpolatedS = Qf + x * (Qg-Qf) ;
                 } else {
                     if ("S".equals(s1)) {
                         interpolatedS = v1;
