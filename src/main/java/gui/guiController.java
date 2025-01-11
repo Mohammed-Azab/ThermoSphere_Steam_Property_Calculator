@@ -247,17 +247,17 @@ public class guiController implements Initializable {
             } else if ("Pressure".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Temperature", "Volume", "Internal Energy", "Enthalpy", "Entropy", "Quality", "Phase"));
             } else if ("Volume".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Internal Energy","Enthalpy", "Entropy", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
             } else if ("Enthalpy".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume","Internal Energy", "Entropy", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
             } else if ("Entropy".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure","Volume", "Internal Energy", "Enthalpy", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Quality", "Phase"));
             } else if ("Quality".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume","Internal Energy", "Volume", "Enthalpy", "Entropy"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume","Internal Energy", "Enthalpy", "Entropy"));
             } else if ("Phase".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure","Volume", "Internal Energy", "Volume", "Enthalpy", "Entropy"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure","Volume", "Internal Energy", "Enthalpy", "Entropy"));
             } else if ("Internal Energy".equals(selectedOption)) {
-                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Enthalpy", "Entropy", "Quality", "Phase"));
+                comboBox.setItems(FXCollections.observableArrayList("Temperature", "Pressure", "Volume", "Quality", "Phase"));
             } else if ("Pressure MPa".equals(selectedOption)) {
                 comboBox.setItems(FXCollections.observableArrayList("Temperature C", "Internal Energy kJ/kg", "Volume m3/kg", "Enthalpy kJ/kg", "Entropy kJ/kg · K"));
             } else if ("Temperature C".equals(selectedOption)) {

@@ -227,7 +227,7 @@ public class Controller {
             else {
                 double [][] table = db.getSuperHeatedTable();
                 steam.setSteamPhase(SteamPhase.SuperHeatedWater);
-                if (vf < v) { //compressed
+                if (vf > v) { //compressed
                     table = db.getCompressedLiquidTable();
                     steam.setSteamPhase(SteamPhase.CompressedLiquid);
                 }
@@ -329,7 +329,7 @@ public class Controller {
             else {
                 double [][] table = db.getSuperHeatedTable();
                 steam.setSteamPhase(SteamPhase.SuperHeatedWater);
-                if (uf < u) { //compressed
+                if (uf > u) { //compressed
                     table = db.getCompressedLiquidTable();
                     steam.setSteamPhase(SteamPhase.CompressedLiquid);
                 }
